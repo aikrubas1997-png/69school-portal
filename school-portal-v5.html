@@ -1,0 +1,2129 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+<title>School Portal — ปรางค์กู่</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<link href="https://fonts.googleapis.com/css2?family=Sarabun:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+  *{-webkit-tap-highlight-color:transparent;box-sizing:border-box;}
+  body{font-family:'Sarabun',sans-serif;overflow:hidden;height:100dvh;height:100vh;}
+
+  /* Wallpaper */
+  .wallpaper{
+    background:
+      radial-gradient(ellipse at 22% 12%, rgba(59,130,246,.65) 0%,transparent 48%),
+      radial-gradient(ellipse at 82% 78%, rgba(139,92,246,.55) 0%,transparent 44%),
+      radial-gradient(ellipse at 8% 88%,  rgba(16,185,129,.42) 0%,transparent 38%),
+      radial-gradient(ellipse at 95% 5%,  rgba(245,158,11,.38) 0%,transparent 34%),
+      linear-gradient(148deg,#040c18 0%,#0e0620 48%,#041410 100%);
+  }
+
+  /* Glass */
+  .glass{background:rgba(255,255,255,.10);backdrop-filter:blur(24px);-webkit-backdrop-filter:blur(24px);border:1px solid rgba(255,255,255,.18);}
+  .glass-dark{background:rgba(0,0,0,.55);backdrop-filter:blur(36px);-webkit-backdrop-filter:blur(36px);border:1px solid rgba(255,255,255,.12);}
+  .glass-med{background:rgba(255,255,255,.07);backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);border:1px solid rgba(255,255,255,.12);}
+
+  /* Icon shine */
+  .icon-wrap{position:relative;overflow:hidden;}
+  .icon-wrap::before{content:'';position:absolute;inset:0;background:linear-gradient(145deg,rgba(255,255,255,.28) 0%,transparent 55%);border-radius:inherit;pointer-events:none;z-index:1;}
+
+  /* Inputs */
+  .inp{background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.15);border-radius:12px;color:#fff;padding:10px 14px;width:100%;font-family:'Sarabun',sans-serif;font-size:15px;transition:border-color .2s,background .2s;outline:none;}
+  .inp:focus{border-color:rgba(96,165,250,.75);background:rgba(255,255,255,.13);}
+  .inp::placeholder{color:rgba(255,255,255,.35);}
+  select.inp option{background:#1e1b4b;color:#fff;}
+
+  /* Scrollbars */
+  .scroll-hide::-webkit-scrollbar{display:none;} .scroll-hide{-ms-overflow-style:none;scrollbar-width:none;}
+  .scroll-thin::-webkit-scrollbar{width:3px;} .scroll-thin::-webkit-scrollbar-thumb{background:rgba(255,255,255,.18);border-radius:2px;} .scroll-thin::-webkit-scrollbar-track{background:transparent;}
+
+  /* App item press */
+  .app-item{cursor:pointer;transition:transform .13s cubic-bezier(.34,1.56,.64,1);}
+  .app-item:active{transform:scale(.86);}
+
+  /* Animations */
+  @keyframes popIn{0%{opacity:0;transform:scale(.55) translateY(8px)}100%{opacity:1;transform:scale(1) translateY(0)}}
+  @keyframes slideUp{from{opacity:0;transform:translateY(28px)}to{opacity:1;transform:none}}
+  @keyframes slideDown{from{opacity:0;transform:translateY(-16px)}to{opacity:1;transform:none}}
+  @keyframes fadeIn{from{opacity:0}to{opacity:1}}
+  @keyframes sheetUp{from{transform:translateY(100%)}to{transform:translateY(0)}}
+  @keyframes shake{0%,100%{transform:translateX(0)}20%{transform:translateX(-8px)}40%{transform:translateX(8px)}60%{transform:translateX(-5px)}80%{transform:translateX(5px)}}
+  @keyframes toastIn{from{opacity:0;transform:translateY(16px) scale(.95)}to{opacity:1;transform:none}}
+  @keyframes spin{from{transform:rotate(0)}to{transform:rotate(360deg)}}
+
+  .anim-pop{animation:popIn .45s cubic-bezier(.34,1.56,.64,1) both;}
+  .anim-up{animation:slideUp .38s ease both;}
+  .anim-down{animation:slideDown .3s ease both;}
+  .anim-fade{animation:fadeIn .3s ease both;}
+  .anim-sheet{animation:sheetUp .38s cubic-bezier(.34,1.1,.64,1) both;}
+  .anim-shake{animation:shake .4s ease;}
+  .anim-toast{animation:toastIn .35s cubic-bezier(.34,1.3,.64,1) both;}
+  .anim-spin{animation:spin .9s linear infinite;}
+
+  /* Stagger delays */
+  .d1{animation-delay:.05s}.d2{animation-delay:.1s}.d3{animation-delay:.15s}.d4{animation-delay:.2s}
+  .d5{animation-delay:.25s}.d6{animation-delay:.3s}.d7{animation-delay:.35s}.d8{animation-delay:.4s}
+  .d9{animation-delay:.45s}.d10{animation-delay:.5s}.d11{animation-delay:.55s}.d12{animation-delay:.6s}
+
+  /* Toggle switch */
+  .toggle-track{width:44px;height:26px;background:rgba(255,255,255,.18);border-radius:13px;position:relative;cursor:pointer;transition:background .25s;flex-shrink:0;}
+  .toggle-track.on{background:#30d158;}
+  .toggle-thumb{width:22px;height:22px;background:#fff;border-radius:11px;position:absolute;top:2px;left:2px;transition:left .25s cubic-bezier(.34,1.56,.64,1);box-shadow:0 1px 4px rgba(0,0,0,.3);}
+  .toggle-track.on .toggle-thumb{left:20px;}
+
+  /* Color picker buttons */
+  .color-btn{width:28px;height:28px;border-radius:8px;cursor:pointer;border:2px solid transparent;transition:border-color .15s,transform .15s;}
+  .color-btn.selected,.color-btn:hover{border-color:#fff;transform:scale(1.15);}
+
+  /* Tab underline */
+  .tab-btn{position:relative;transition:color .2s;}
+  .tab-btn::after{content:'';position:absolute;bottom:-1px;left:0;right:0;height:2px;background:#60a5fa;border-radius:1px;transform:scaleX(0);transition:transform .25s cubic-bezier(.34,1.3,.64,1);}
+  .tab-btn.active{color:#93c5fd;}
+  .tab-btn.active::after{transform:scaleX(1);}
+
+  /* Modal backdrop blur */
+  .modal-bg{position:fixed;inset:0;z-index:50;display:flex;align-items:center;justify-content:center;background:rgba(0,0,0,.6);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);}
+  .sheet-bg{position:fixed;inset:0;z-index:50;display:flex;align-items:flex-end;justify-content:center;background:rgba(0,0,0,.55);backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);}
+
+  /* Sidebar active item */
+  .sidebar-app{transition:background .15s;}
+  .sidebar-app:hover{background:rgba(255,255,255,.08);border-radius:12px;}
+
+  /* Responsive icon size */
+  .icon-box{width:64px;height:64px;border-radius:16px;font-size:28px;}
+  @media(min-width:640px){.icon-box{width:70px;height:70px;border-radius:17px;font-size:30px;}}
+  @media(min-width:1024px){.icon-box{width:66px;height:66px;border-radius:16px;font-size:28px;}}
+
+  /* Status bar */
+  .status-bar{height:44px;}
+  @supports(height:env(safe-area-inset-top)){.status-bar{height:calc(44px + env(safe-area-inset-top));padding-top:env(safe-area-inset-top);}}
+
+  /* Safe bottom */
+  .safe-bottom{padding-bottom:env(safe-area-inset-bottom,0px);}
+
+  /* ── Google Sheets Sync Status ── */
+  .sync-dot{width:8px;height:8px;border-radius:50%;flex-shrink:0;transition:background .4s;}
+  .sync-dot.ok{background:#30d158;}
+  .sync-dot.warn{background:#f59e0b;}
+  .sync-dot.err{background:#ef4444;}
+  .sync-dot.idle{background:rgba(255,255,255,.25);}
+  @keyframes pulse{0%,100%{opacity:1}50%{opacity:.35}}
+  .sync-dot.syncing{background:#60a5fa;animation:pulse .9s ease-in-out infinite;}
+
+  /* Sheet config tab ping animation */
+  @keyframes pingOnce{0%{transform:scale(1);opacity:.8}80%{transform:scale(2.2);opacity:0}100%{transform:scale(1);opacity:0}}
+  .ping-once{animation:pingOnce .6s ease-out forwards;}
+
+  /* Connection test result box */
+  .conn-result{border-radius:14px;padding:12px 16px;font-size:13px;line-height:1.55;transition:opacity .3s;}
+
+  /* Latency bar */
+  .lat-bar{height:4px;border-radius:2px;background:rgba(255,255,255,.12);overflow:hidden;margin-top:6px;}
+  .lat-fill{height:100%;border-radius:2px;transition:width .6s cubic-bezier(.34,1.3,.64,1);}
+
+  /* [SECURITY FIX #4] Input validation error hints */
+  .error-hint{color:#f87171;font-size:0.75rem;margin-top:4px;padding-left:4px;}
+</style>
+</head>
+<body class="bg-black text-white">
+
+<!-- WALLPAPER -->
+<div class="wallpaper fixed inset-0 z-0"></div>
+
+<!-- ══════════════════════════════════════
+     MAIN LAYOUT
+══════════════════════════════════════ -->
+<div class="fixed inset-0 z-10 flex">
+
+  <!-- ── SIDEBAR (Desktop lg+) ── -->
+  <aside id="sidebar" class="hidden lg:flex flex-col glass border-r border-white/10 flex-shrink-0 w-72 xl:w-80 h-full">
+    <!-- School Header -->
+    <div class="p-6 pb-4">
+      <div class="flex items-center gap-3 mb-5">
+        <div id="sb-school-emoji" class="w-12 h-12 glass rounded-2xl flex items-center justify-center shadow-lg overflow-hidden flex-shrink-0">
+          <span class="text-3xl">🏫</span>
+        </div>
+        <div>
+          <div id="sb-school-name" class="font-bold text-sm leading-tight">โรงเรียนปรางค์กู่</div>
+          <div id="sb-school-sub" class="text-white/50 text-xs mt-0.5">สพม.ศรีสะเกษ ยโสธร</div>
+        </div>
+      </div>
+      <!-- Clock -->
+      <div class="glass-med rounded-2xl p-4 text-center">
+        <div id="sb-time" class="text-5xl font-thin tracking-tighter leading-none">00:00</div>
+        <div id="sb-dayname" class="text-white/60 text-xs mt-1 uppercase tracking-wide">วันจันทร์</div>
+        <div id="sb-date" class="text-white/80 text-sm mt-0.5">1 มกราคม 2568</div>
+      </div>
+    </div>
+
+    <!-- Divider -->
+    <div class="border-t border-white/10 mx-6"></div>
+
+    <!-- Quick nav -->
+    <div class="flex-1 overflow-y-auto scroll-hide px-4 py-4">
+      <div class="text-white/40 text-xs font-semibold uppercase tracking-widest px-2 mb-3">ระบบหลัก</div>
+      <div id="sidebarNav" class="space-y-0.5"></div>
+    </div>
+
+    <!-- Admin / Settings -->
+    <div class="p-4 border-t border-white/10">
+      <button onclick="handleSettingsClick()"
+        class="w-full glass-med rounded-xl px-4 py-3 flex items-center gap-3 hover:bg-white/10 transition text-left">
+        <span class="text-xl">⚙️</span>
+        <span class="text-sm font-semibold">ตั้งค่าระบบ</span>
+        <span id="admin-badge-sb" class="ml-auto text-xs glass rounded-full px-2 py-0.5 text-blue-300 hidden">Admin</span>
+        <span id="sync-dot-sb" class="sync-dot idle" title="ยังไม่ได้เชื่อมต่อ Google Sheets"></span>
+      </button>
+    </div>
+  </aside>
+
+  <!-- ── MAIN CONTENT ── -->
+  <main class="flex-1 flex flex-col h-full overflow-hidden">
+
+    <!-- Mobile/Tablet Status Bar -->
+    <div class="lg:hidden status-bar glass-med border-b border-white/10 flex items-end px-4 pb-2 gap-3">
+      <span id="m-time" class="text-sm font-bold">00:00</span>
+      <div class="ml-auto flex items-center gap-2.5">
+        <span id="admin-pill" class="hidden text-xs bg-blue-500/30 border border-blue-400/40 text-blue-300 rounded-full px-2.5 py-0.5 font-semibold">Admin</span>
+        <span id="sync-dot-m" class="sync-dot idle" title="Google Sheets"></span>
+        <svg class="w-4 h-4 fill-white/70" viewBox="0 0 24 24"><path d="M1 9l2 2c4.97-4.97 13.03-4.97 18 0l2-2C16.93 2.93 7.08 2.93 1 9zm8 8l3 3 3-3a4.237 4.237 0 00-6 0zm-4-4l2 2a7.074 7.074 0 0110 0l2-2C15.14 9.14 8.87 9.14 5 13z"/></svg>
+        <div class="flex items-center gap-1">
+          <div class="w-6 h-3 border border-white/70 rounded-sm p-px relative"><div class="h-full bg-white rounded-xs" style="width:68%"></div><div class="absolute -right-1 top-1/2 -translate-y-1/2 w-0.5 h-1.5 bg-white/50 rounded-r"></div></div>
+        </div>
+        <!-- ⚙️ Settings Button (Mobile) -->
+        <button onclick="handleSettingsClick()"
+          class="w-8 h-8 glass rounded-xl flex items-center justify-center hover:bg-white/20 active:scale-90 transition-all"
+          title="ตั้งค่าระบบ">
+          <span class="text-base leading-none">⚙️</span>
+        </button>
+      </div>
+    </div>
+
+    <!-- Mobile Date Widget -->
+    <div class="lg:hidden text-center py-4 anim-down">
+      <div id="m-dayname" class="text-white/60 text-xs uppercase tracking-widest">วันจันทร์</div>
+      <div id="m-bigtime" class="text-6xl sm:text-7xl font-extralight tracking-[-4px] leading-none mt-1">00:00</div>
+      <div id="m-date" class="text-white/70 text-sm mt-1">1 มกราคม 2568</div>
+      <div id="m-school" class="inline-flex items-center gap-1.5 glass rounded-full px-3 py-1 text-xs font-semibold mt-2">
+        <span id="m-school-emoji"><span class="text-base">🏫</span></span><span id="m-school-name">โรงเรียนปรางค์กู่</span>
+      </div>
+    </div>
+
+    <!-- Search Bar -->
+    <div class="px-4 pb-3 lg:pt-5 lg:px-6 anim-down" style="animation-delay:.1s">
+      <div class="glass rounded-2xl flex items-center gap-2.5 px-4 py-2.5 max-w-xl mx-auto lg:mx-0">
+        <svg class="w-4 h-4 fill-white/50 flex-shrink-0" viewBox="0 0 24 24"><path d="M15.5 14h-.79l-.28-.27A6.471 6.471 0 0016 9.5 6.5 6.5 0 109.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z"/></svg>
+        <input id="searchInput" type="text" placeholder="ค้นหาระบบ..." oninput="filterApps(this.value)"
+          class="bg-transparent border-none outline-none text-white text-sm placeholder-white/40 flex-1 font-['Sarabun']">
+        <button onclick="document.getElementById('searchInput').value='';filterApps('')" class="text-white/40 hover:text-white/80 transition text-xs">✕</button>
+      </div>
+    </div>
+
+    <!-- App Grid Scroll Area -->
+    <div class="flex-1 overflow-y-auto scroll-hide scroll-thin pb-2 lg:pb-6">
+      <!-- Section: ระบบหลัก -->
+      <div class="px-4 lg:px-6">
+        <div class="text-white/40 text-xs font-semibold uppercase tracking-widest mb-3 mt-1 lg:mt-0">ระบบหลัก</div>
+        <div id="appGrid" class="grid grid-cols-4 sm:grid-cols-5 md:grid-cols-6 lg:grid-cols-5 xl:grid-cols-6 2xl:grid-cols-7 gap-x-3 gap-y-5"></div>
+      </div>
+    </div>
+  </main>
+</div>
+
+<!-- ── MOBILE DOCK (hidden lg+) ── -->
+<div id="dock" class="lg:hidden fixed bottom-0 left-0 right-0 z-20 safe-bottom">
+  <div class="glass border-t border-white/15 px-6 pt-2 pb-4">
+    <div id="dockGrid" class="flex justify-around items-center"></div>
+  </div>
+</div>
+
+
+<!-- ══════════════════════════════════════
+     MODAL: App Detail (Bottom Sheet)
+══════════════════════════════════════ -->
+<div id="modalAppDetail" class="sheet-bg hidden" onclick="closeIfBackdrop(event,'modalAppDetail')">
+  <div class="glass-dark rounded-t-3xl w-full max-w-lg anim-sheet pb-safe" style="padding-bottom:max(24px,env(safe-area-inset-bottom))">
+    <div class="w-9 h-1.5 bg-white/25 rounded-full mx-auto mt-3 mb-4"></div>
+    <div class="px-5 pb-6">
+      <div class="flex items-center gap-4 mb-4">
+        <div id="d-icon" class="icon-wrap icon-box flex items-center justify-center text-3xl shadow-xl flex-shrink-0"></div>
+        <div>
+          <div id="d-name" class="text-xl font-bold"></div>
+          <div id="d-sub" class="text-white/50 text-sm mt-0.5"></div>
+        </div>
+      </div>
+      <div id="d-desc" class="glass-med rounded-2xl p-4 text-white/70 text-sm leading-relaxed mb-4"></div>
+      <button onclick="launchCurrentApp()" class="w-full bg-blue-500 hover:bg-blue-400 transition rounded-2xl py-3.5 font-bold text-base flex items-center justify-center gap-2 mb-3">
+        🚀 <span>เปิดระบบ</span>
+      </button>
+      <button onclick="closeModal('modalAppDetail')" class="w-full glass-med rounded-2xl py-3 font-semibold text-white/70 hover:text-white transition text-sm">
+        ยกเลิก
+      </button>
+    </div>
+  </div>
+</div>
+
+
+<!-- ══════════════════════════════════════
+     MODAL: Admin Login
+══════════════════════════════════════ -->
+<div id="modalAdminLogin" class="modal-bg hidden" onclick="closeIfBackdrop(event,'modalAdminLogin')">
+  <div class="glass-dark rounded-3xl w-full max-w-sm mx-4 p-6 anim-up">
+    <div class="text-center mb-6">
+      <div class="w-16 h-16 glass rounded-2xl flex items-center justify-center text-3xl mx-auto mb-4 shadow-xl">🔐</div>
+      <div class="text-xl font-bold">ผู้ดูแลระบบ</div>
+      <div class="text-white/50 text-sm mt-1">เข้าสู่ระบบเพื่อจัดการ Portal</div>
+    </div>
+    <div class="space-y-3">
+      <div>
+        <label class="text-white/60 text-xs font-semibold uppercase tracking-wide block mb-1.5">ชื่อผู้ใช้</label>
+        <input id="loginUser" type="text" placeholder="กรอกชื่อผู้ใช้" class="inp" autocomplete="username" onkeydown="if(event.key==='Enter')document.getElementById('loginPass').focus()">
+      </div>
+      <div>
+        <label class="text-white/60 text-xs font-semibold uppercase tracking-wide block mb-1.5">รหัสผ่าน</label>
+        <div class="relative">
+          <input id="loginPass" type="password" placeholder="กรอกรหัสผ่าน" class="inp pr-10" autocomplete="current-password" onkeydown="if(event.key==='Enter')doLogin()">
+          <button type="button" onclick="togglePw('loginPass',this)" class="absolute right-3 top-1/2 -translate-y-1/2 text-white/40 hover:text-white/80 transition text-sm">👁️</button>
+        </div>
+      </div>
+      <div id="loginError" class="text-red-400 text-sm text-center hidden py-1 glass-med rounded-xl">ชื่อผู้ใช้หรือรหัสผ่านไม่ถูกต้อง</div>
+    </div>
+    <button onclick="doLogin()" class="mt-5 w-full bg-blue-500 hover:bg-blue-400 transition rounded-2xl py-3.5 font-bold text-base">
+      เข้าสู่ระบบ
+    </button>
+    <button onclick="closeModal('modalAdminLogin')" class="mt-2.5 w-full glass-med rounded-2xl py-2.5 text-white/60 hover:text-white transition text-sm font-semibold">
+      ยกเลิก
+    </button>
+  </div>
+</div>
+
+
+<!-- ══════════════════════════════════════
+     MODAL: Admin Panel (Full Screen)
+══════════════════════════════════════ -->
+<div id="modalAdminPanel" class="fixed inset-0 z-50 hidden">
+  <div class="glass-dark w-full h-full flex flex-col anim-fade">
+
+    <!-- Panel Header -->
+    <div class="flex items-center gap-3 px-5 py-4 border-b border-white/10 flex-shrink-0">
+      <div class="text-xl">⚙️</div>
+      <div class="font-bold text-base flex-1">ตั้งค่าระบบ</div>
+      <span class="text-xs glass rounded-full px-2.5 py-1 text-blue-300 font-semibold">Admin</span>
+      <button onclick="logoutAdmin()" class="text-xs text-red-400 hover:text-red-300 transition glass-med rounded-xl px-3 py-1.5 font-semibold ml-1">ออกจากระบบ</button>
+      <button onclick="closeModal('modalAdminPanel')" class="w-8 h-8 glass-med rounded-full flex items-center justify-center hover:bg-white/15 transition ml-1">✕</button>
+    </div>
+
+    <!-- Tabs -->
+    <div class="flex border-b border-white/10 px-5 flex-shrink-0 overflow-x-auto scroll-hide">
+      <button onclick="switchTab('apps')" id="tab-apps" class="tab-btn active px-4 py-3 text-sm font-semibold text-white/60 whitespace-nowrap">🗂️ จัดการแอป</button>
+      <button onclick="switchTab('school')" id="tab-school" class="tab-btn px-4 py-3 text-sm font-semibold text-white/60 whitespace-nowrap">🏫 ข้อมูลโรงเรียน</button>
+      <button onclick="switchTab('password')" id="tab-password" class="tab-btn px-4 py-3 text-sm font-semibold text-white/60 whitespace-nowrap">🔑 รหัสผ่าน</button>
+      <button onclick="switchTab('sheets')" id="tab-sheets" class="tab-btn px-4 py-3 text-sm font-semibold text-white/60 whitespace-nowrap">☁️ Google Sheets</button>
+    </div>
+
+    <!-- Panel Content -->
+    <div class="flex-1 overflow-y-auto scroll-thin">
+
+      <!-- ─── TAB: APPS ─── -->
+      <div id="panel-apps" class="p-5 max-w-3xl mx-auto">
+        <!-- App List -->
+        <div class="flex items-center justify-between mb-4">
+          <div class="text-white/60 text-sm font-semibold">รายการระบบทั้งหมด</div>
+          <button onclick="openAppEditor(null)" class="bg-blue-500 hover:bg-blue-400 transition rounded-xl px-4 py-2 text-sm font-bold flex items-center gap-1.5">
+            ➕ เพิ่มระบบ
+          </button>
+        </div>
+        <div id="adminAppList" class="space-y-2"></div>
+      </div>
+
+      <!-- ─── TAB: SCHOOL ─── -->
+      <div id="panel-school" class="p-5 max-w-lg mx-auto hidden">
+        <div class="space-y-4">
+
+          <!-- Logo Preview -->
+          <div class="flex items-center justify-center mb-2">
+            <div id="logo-preview-wrap" class="w-24 h-24 glass-med rounded-3xl flex items-center justify-center overflow-hidden shadow-xl">
+              <img id="logo-preview-img" src="https://img1.pic.in.th/images/LOGO--.png" alt="logo preview"
+                class="w-full h-full object-contain p-1 rounded-3xl"
+                onerror="this.style.display='none';document.getElementById('logo-preview-emoji').style.display='flex'">
+              <span id="logo-preview-emoji" class="text-5xl hidden">🏫</span>
+            </div>
+          </div>
+
+          <div>
+            <label class="text-white/60 text-xs font-semibold uppercase tracking-wide block mb-1.5">URL โลโก้โรงเรียน (รูปภาพ)</label>
+            <input id="sc-logo" type="url" class="inp" placeholder="https://example.com/logo.png"
+              oninput="previewLogo(this.value)">
+            <div class="text-white/35 text-xs mt-1.5 px-1">แนะนำ: อัปโหลดรูปที่ pic.in.th หรือ imgur แล้ววางลิงก์ที่นี่</div>
+          </div>
+
+          <div>
+            <label class="text-white/60 text-xs font-semibold uppercase tracking-wide block mb-1.5">Emoji สำรอง (กรณีโหลดรูปไม่ได้)</label>
+            <input id="sc-emoji" type="text" class="inp" placeholder="🏫" maxlength="4">
+          </div>
+
+          <div class="border-t border-white/10 pt-4">
+            <div class="text-white/60 text-xs font-semibold uppercase tracking-wide mb-3">ข้อมูลโรงเรียน</div>
+          </div>
+
+          <div>
+            <label class="text-white/60 text-xs font-semibold uppercase tracking-wide block mb-1.5">ชื่อโรงเรียน</label>
+            <input id="sc-name" type="text" class="inp" placeholder="ชื่อโรงเรียน">
+          </div>
+          <div>
+            <label class="text-white/60 text-xs font-semibold uppercase tracking-wide block mb-1.5">คำอธิบาย / หน่วยงาน</label>
+            <input id="sc-sub" type="text" class="inp" placeholder="เช่น สพม.ศรีสะเกษ ยโสธร">
+          </div>
+
+          <button onclick="saveSchoolSettings()" class="w-full bg-green-500 hover:bg-green-400 transition rounded-2xl py-3.5 font-bold text-base mt-2">
+            💾 บันทึกข้อมูลโรงเรียน
+          </button>
+        </div>
+      </div>
+
+      <!-- ─── TAB: PASSWORD ─── -->
+      <div id="panel-password" class="p-5 max-w-lg mx-auto hidden">
+        <div class="glass-med rounded-2xl p-4 mb-5 text-sm text-white/60 leading-relaxed">
+          🔒 การเปลี่ยนรหัสผ่านจะมีผลทันที กรุณาจดรหัสใหม่ไว้ให้แน่ใจก่อนบันทึก
+        </div>
+        <div class="space-y-4">
+          <div>
+            <label class="text-white/60 text-xs font-semibold uppercase tracking-wide block mb-1.5">ชื่อผู้ใช้ใหม่</label>
+            <input id="pw-user" type="text" class="inp" placeholder="ชื่อผู้ใช้ Admin">
+          </div>
+          <div>
+            <label class="text-white/60 text-xs font-semibold uppercase tracking-wide block mb-1.5">รหัสผ่านใหม่</label>
+            <div class="relative">
+              <input id="pw-new" type="password" class="inp pr-10" placeholder="รหัสผ่านใหม่">
+              <button type="button" onclick="togglePw('pw-new',this)" class="absolute right-3 top-1/2 -translate-y-1/2 text-white/40 hover:text-white/80 transition">👁️</button>
+            </div>
+          </div>
+          <div>
+            <label class="text-white/60 text-xs font-semibold uppercase tracking-wide block mb-1.5">ยืนยันรหัสผ่านใหม่</label>
+            <div class="relative">
+              <input id="pw-confirm" type="password" class="inp pr-10" placeholder="ยืนยันรหัสผ่านใหม่">
+              <button type="button" onclick="togglePw('pw-confirm',this)" class="absolute right-3 top-1/2 -translate-y-1/2 text-white/40 hover:text-white/80 transition">👁️</button>
+            </div>
+          </div>
+          <div id="pw-match-error" class="text-red-400 text-sm text-center hidden">รหัสผ่านใหม่ไม่ตรงกัน</div>
+          <button onclick="changePassword()" class="w-full bg-orange-500 hover:bg-orange-400 transition rounded-2xl py-3.5 font-bold text-base">
+            🔑 เปลี่ยนรหัสผ่าน
+          </button>
+        </div>
+      </div>
+
+      <!-- ─── TAB: GOOGLE SHEETS ─── -->
+      <div id="panel-sheets" class="p-5 max-w-2xl mx-auto hidden">
+        <div class="space-y-5">
+
+          <!-- Status Card -->
+          <div id="sheets-status-card" class="glass-med rounded-2xl p-4 flex items-center gap-4">
+            <div class="relative flex-shrink-0">
+              <span id="sheets-status-icon" class="text-3xl">☁️</span>
+              <span id="sheets-status-dot" class="sync-dot idle absolute -bottom-0.5 -right-0.5 border-2 border-black/40"></span>
+            </div>
+            <div class="flex-1 min-w-0">
+              <div id="sheets-status-title" class="font-bold text-sm">ยังไม่ได้เชื่อมต่อ</div>
+              <div id="sheets-status-sub" class="text-white/50 text-xs mt-0.5">กรอก Web App URL และ API Key แล้วกดทดสอบ</div>
+            </div>
+            <div id="sheets-status-badge" class="text-xs px-3 py-1 rounded-full bg-white/10 text-white/50 font-semibold flex-shrink-0">ออฟไลน์</div>
+          </div>
+
+          <!-- Section: Credentials -->
+          <div>
+            <div class="text-white/40 text-xs font-semibold uppercase tracking-widest mb-3">🔐 ข้อมูลการเชื่อมต่อ</div>
+            <div class="space-y-3">
+              <div>
+                <label class="text-white/60 text-xs font-semibold uppercase tracking-wide block mb-1.5">Web App URL (Google Apps Script)</label>
+                <input id="gs-url" type="url" class="inp" placeholder="https://script.google.com/macros/s/AKfy.../exec"
+                  oninput="sheetsCfgDirty()">
+                <div class="text-white/30 text-xs mt-1 px-1">ได้จาก Apps Script → Deploy → Manage deployments → Web App URL</div>
+              </div>
+              <div>
+                <label class="text-white/60 text-xs font-semibold uppercase tracking-wide block mb-1.5">API Key (Script Properties)</label>
+                <div class="relative">
+                  <input id="gs-key" type="password" class="inp pr-10" placeholder="ตั้งค่าใน Script Properties: PORTAL_API_KEY"
+                    oninput="sheetsCfgDirty()">
+                  <button type="button" onclick="togglePw('gs-key',this)" class="absolute right-3 top-1/2 -translate-y-1/2 text-white/40 hover:text-white/80 transition text-sm">👁️</button>
+                </div>
+              </div>
+              <div class="grid grid-cols-2 gap-3">
+                <div>
+                  <label class="text-white/60 text-xs font-semibold uppercase tracking-wide block mb-1.5">Cache (นาที)</label>
+                  <input id="gs-cache" type="number" class="inp" placeholder="5" min="1" max="60" value="5" oninput="sheetsCfgDirty()">
+                </div>
+                <div>
+                  <label class="text-white/60 text-xs font-semibold uppercase tracking-wide block mb-1.5">Retry ครั้ง</label>
+                  <input id="gs-retry" type="number" class="inp" placeholder="3" min="1" max="5" value="3" oninput="sheetsCfgDirty()">
+                </div>
+              </div>
+              <div class="flex gap-2">
+                <button onclick="saveSheetConfig()" id="btn-save-cfg" class="flex-1 bg-blue-500 hover:bg-blue-400 transition rounded-xl py-2.5 font-bold text-sm">
+                  💾 บันทึกการตั้งค่า
+                </button>
+                <button onclick="testSheetConnection()" id="btn-test-conn" class="flex-1 glass-med hover:bg-white/15 transition rounded-xl py-2.5 font-semibold text-sm">
+                  🔌 ทดสอบการเชื่อมต่อ
+                </button>
+              </div>
+            </div>
+          </div>
+
+          <!-- Connection Test Result -->
+          <div id="conn-result-box" class="hidden conn-result glass-med">
+            <div class="flex items-start gap-3">
+              <span id="conn-result-icon" class="text-xl flex-shrink-0">⏳</span>
+              <div class="flex-1">
+                <div id="conn-result-title" class="font-bold text-sm">กำลังทดสอบ...</div>
+                <div id="conn-result-detail" class="text-white/55 text-xs mt-0.5"></div>
+                <div class="lat-bar mt-2"><div id="conn-lat-fill" class="lat-fill bg-blue-400" style="width:0%"></div></div>
+                <div id="conn-lat-label" class="text-white/35 text-xs mt-1"></div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Section: Sync Actions -->
+          <div>
+            <div class="text-white/40 text-xs font-semibold uppercase tracking-widest mb-3">🔄 ซิงค์ข้อมูล</div>
+            <div class="space-y-2">
+              <!-- Pull -->
+              <div class="glass-med rounded-2xl px-4 py-3 flex items-center gap-3">
+                <div class="flex-1">
+                  <div class="font-semibold text-sm">📥 ดึงข้อมูลจาก Google Sheets</div>
+                  <div class="text-white/45 text-xs mt-0.5">โหลดข้อมูลล่าสุดจาก Sheets มาแทนที่ local cache</div>
+                </div>
+                <button onclick="pullFromSheets()" id="btn-pull" class="flex-shrink-0 bg-teal-500/80 hover:bg-teal-500 transition rounded-xl px-4 py-2 text-sm font-bold">
+                  Pull
+                </button>
+              </div>
+              <!-- Push -->
+              <div class="glass-med rounded-2xl px-4 py-3 flex items-center gap-3">
+                <div class="flex-1">
+                  <div class="font-semibold text-sm">📤 อัปโหลดข้อมูลขึ้น Google Sheets</div>
+                  <div class="text-white/45 text-xs mt-0.5">บันทึกข้อมูล local ทั้งหมดขึ้น Sheets (ต้องยืนยัน)</div>
+                </div>
+                <button onclick="pushToSheets()" id="btn-push" class="flex-shrink-0 bg-purple-500/80 hover:bg-purple-500 transition rounded-xl px-4 py-2 text-sm font-bold">
+                  Push
+                </button>
+              </div>
+              <!-- Sync info -->
+              <div id="sync-info-row" class="text-white/30 text-xs px-1 pt-1">
+                ซิงค์ล่าสุด: <span id="last-sync-label">ยังไม่เคย</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Section: Sheets Structure -->
+          <div>
+            <div class="text-white/40 text-xs font-semibold uppercase tracking-widest mb-3">📋 โครงสร้าง Google Sheets</div>
+            <div class="space-y-2" id="sheets-health-list">
+              <!-- rendered by JS -->
+            </div>
+            <button onclick="checkSheetsHealth()" class="mt-3 w-full glass-med hover:bg-white/10 transition rounded-xl py-2.5 font-semibold text-sm text-white/70">
+              🔍 ตรวจสอบ Sheets ทั้งหมด
+            </button>
+          </div>
+
+          <!-- Section: Apps Script Code -->
+          <div>
+            <div class="text-white/40 text-xs font-semibold uppercase tracking-widest mb-3">📄 Google Apps Script</div>
+            <div class="glass-med rounded-2xl p-4 space-y-3">
+              <div class="text-white/70 text-sm leading-relaxed">คัดลอก Code ด้านล่างไปวางใน Google Apps Script แล้ว Deploy เป็น Web App</div>
+              <div class="flex gap-2">
+                <button onclick="copyGasCode()" class="flex-1 bg-green-500/80 hover:bg-green-500 transition rounded-xl py-2.5 font-bold text-sm">
+                  📋 คัดลอก Code.gs
+                </button>
+                <button onclick="openGasConsole()" class="flex-1 glass hover:bg-white/15 transition rounded-xl py-2.5 font-semibold text-sm">
+                  🚀 เปิด Apps Script
+                </button>
+              </div>
+              <button onclick="initSheetsStructure()" class="w-full bg-indigo-500/80 hover:bg-indigo-500 transition rounded-xl py-2.5 font-bold text-sm">
+                🏗️ สร้าง Sheets อัตโนมัติ (ครั้งแรก)
+              </button>
+              <div class="space-y-1.5">
+                <div class="text-white/40 text-xs font-semibold">ขั้นตอนการ Deploy:</div>
+                <div class="text-white/55 text-xs leading-relaxed space-y-1">
+                  <div>1. เปิด script.google.com → สร้างโปรเจกต์ใหม่</div>
+                  <div>2. วาง Code.gs → บันทึก</div>
+                  <div>3. Project Settings → Script Properties → เพิ่ม <code class="bg-white/10 px-1 rounded text-white/80">PORTAL_API_KEY</code></div>
+                  <div>4. Deploy → New deployment → Web App → Execute as: Me → Access: Anyone</div>
+                  <div>5. คัดลอก URL มาวางในช่องด้านบน</div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Section: Export / Import -->
+          <div>
+            <div class="text-white/40 text-xs font-semibold uppercase tracking-widest mb-3">💾 สำรองข้อมูล</div>
+            <div class="grid grid-cols-2 gap-3">
+              <button onclick="exportJSON()" class="glass-med hover:bg-white/15 transition rounded-xl py-3 font-semibold text-sm">
+                📥 Export JSON
+              </button>
+              <label class="glass-med hover:bg-white/15 transition rounded-xl py-3 font-semibold text-sm text-center cursor-pointer">
+                📤 Import JSON
+                <input type="file" accept=".json" class="hidden" onchange="importJSON(this)">
+              </label>
+            </div>
+          </div>
+
+        </div>
+      </div>
+
+    </div><!-- end scroll area -->
+  </div>
+</div><!-- end modalAdminPanel -->
+
+
+<!-- ══════════════════════════════════════
+     MODAL: App Editor (New / Edit)
+══════════════════════════════════════ -->
+<div id="modalAppEditor" class="modal-bg hidden" onclick="closeIfBackdrop(event,'modalAppEditor')">
+  <div class="glass-dark rounded-3xl w-full max-w-lg mx-3 anim-up max-h-[90vh] flex flex-col">
+    <div class="flex items-center gap-3 px-5 pt-5 pb-3 border-b border-white/10 flex-shrink-0">
+      <div id="editor-title" class="font-bold text-base flex-1">เพิ่มระบบใหม่</div>
+      <button onclick="closeModal('modalAppEditor')" class="w-8 h-8 glass-med rounded-full flex items-center justify-center hover:bg-white/15 transition">✕</button>
+    </div>
+    <div class="overflow-y-auto scroll-thin p-5 flex-1">
+      <div class="space-y-4">
+        <input id="e-id" type="hidden">
+
+        <div class="grid grid-cols-2 gap-3">
+          <div>
+            <label class="text-white/60 text-xs font-semibold uppercase tracking-wide block mb-1.5">ไอคอน (Emoji)</label>
+            <input id="e-icon" type="text" class="inp text-center text-2xl" placeholder="🏅" maxlength="4">
+          </div>
+          <div>
+            <label class="text-white/60 text-xs font-semibold uppercase tracking-wide block mb-1.5">Badge (0=ซ่อน)</label>
+            <input id="e-badge" type="number" class="inp" placeholder="0" min="0" max="99">
+          </div>
+        </div>
+
+        <div>
+          <label class="text-white/60 text-xs font-semibold uppercase tracking-wide block mb-1.5">ชื่อระบบ (ภาษาไทย)</label>
+          <input id="e-name" type="text" class="inp" placeholder="เช่น คะแนนความประพฤติ">
+        </div>
+
+        <div>
+          <label class="text-white/60 text-xs font-semibold uppercase tracking-wide block mb-1.5">ชื่อรอง (ภาษาอังกฤษ)</label>
+          <input id="e-sub" type="text" class="inp" placeholder="เช่น Behavior Score System v5.0">
+        </div>
+
+        <div>
+          <label class="text-white/60 text-xs font-semibold uppercase tracking-wide block mb-1.5">URL ระบบ (GAS Deployment)</label>
+          <input id="e-url" type="url" class="inp" placeholder="https://script.google.com/macros/s/...">
+        </div>
+
+        <div>
+          <label class="text-white/60 text-xs font-semibold uppercase tracking-wide block mb-1.5">คำอธิบายระบบ</label>
+          <textarea id="e-desc" rows="2" class="inp resize-none" placeholder="อธิบายการทำงานของระบบ..."></textarea>
+        </div>
+
+        <div>
+          <label class="text-white/60 text-xs font-semibold uppercase tracking-wide block mb-2">สีไอคอน</label>
+          <div id="colorPicker" class="flex flex-wrap gap-2"></div>
+          <input id="e-color" type="hidden" value="blue">
+        </div>
+
+        <div class="flex items-center justify-between glass-med rounded-xl px-4 py-3">
+          <span class="text-sm font-semibold">เปิดใช้งาน</span>
+          <div id="toggle-enabled" class="toggle-track on" onclick="toggleSwitch(this,'e-enabled')">
+            <div class="toggle-thumb"></div>
+          </div>
+          <input id="e-enabled" type="hidden" value="true">
+        </div>
+
+        <div class="flex items-center justify-between glass-med rounded-xl px-4 py-3">
+          <span class="text-sm font-semibold">แสดงใน Dock (มือถือ)</span>
+          <div id="toggle-dock" class="toggle-track" onclick="toggleSwitch(this,'e-dock')">
+            <div class="toggle-thumb"></div>
+          </div>
+          <input id="e-dock" type="hidden" value="false">
+        </div>
+      </div>
+    </div>
+
+    <!-- Editor Footer -->
+    <div class="px-5 pb-5 pt-3 border-t border-white/10 flex-shrink-0 space-y-2">
+      <button onclick="saveAppFromEditor()" class="w-full bg-blue-500 hover:bg-blue-400 transition rounded-2xl py-3.5 font-bold">
+        💾 บันทึก (ต้องยืนยันรหัสผ่าน)
+      </button>
+      <button id="btn-delete-app" onclick="deleteCurrentApp()" class="w-full bg-red-500/20 hover:bg-red-500/35 border border-red-500/30 text-red-400 transition rounded-2xl py-2.5 font-semibold text-sm hidden">
+        🗑️ ลบระบบนี้
+      </button>
+    </div>
+  </div>
+</div>
+
+
+<!-- ══════════════════════════════════════
+     MODAL: Confirm Password
+══════════════════════════════════════ -->
+<div id="modalConfirmPw" class="modal-bg hidden">
+  <div class="glass-dark rounded-3xl w-full max-w-sm mx-4 p-6 anim-up" id="confirmPwBox">
+    <div class="text-center mb-5">
+      <div class="text-4xl mb-3">🔐</div>
+      <div class="font-bold text-lg">ยืนยันการบันทึก</div>
+      <div class="text-white/50 text-sm mt-1">กรุณากรอกรหัสผ่าน Admin</div>
+    </div>
+    <div class="relative mb-1">
+      <input id="confirmPwInput" type="password" placeholder="รหัสผ่าน Admin" class="inp pr-10"
+        onkeydown="if(event.key==='Enter')doConfirmPw()">
+      <button type="button" onclick="togglePw('confirmPwInput',this)" class="absolute right-3 top-1/2 -translate-y-1/2 text-white/40 hover:text-white/80 transition">👁️</button>
+    </div>
+    <div id="confirmPwError" class="text-red-400 text-sm text-center hidden py-1 mb-1">รหัสผ่านไม่ถูกต้อง</div>
+    <div class="flex gap-3 mt-4">
+      <button onclick="cancelConfirmPw()" class="flex-1 glass-med rounded-2xl py-3 font-semibold text-white/70 hover:text-white transition">
+        ยกเลิก
+      </button>
+      <button onclick="doConfirmPw()" class="flex-1 bg-green-500 hover:bg-green-400 transition rounded-2xl py-3 font-bold">
+        ✓ ยืนยัน
+      </button>
+    </div>
+  </div>
+</div>
+
+
+<!-- ══════════════════════════════════════
+     TOAST
+══════════════════════════════════════ -->
+<div id="toastContainer" class="fixed bottom-24 lg:bottom-6 left-1/2 -translate-x-1/2 z-[100] flex flex-col items-center gap-2 pointer-events-none"></div>
+
+
+<!-- ══════════════════════════════════════
+     JAVASCRIPT
+══════════════════════════════════════ -->
+<script>
+// ═══════════════════════════════════════
+// DATA & DEFAULTS
+// ═══════════════════════════════════════
+const COLORS = {
+  blue:   'linear-gradient(145deg,#60a5fa,#2563eb)',
+  green:  'linear-gradient(145deg,#34d399,#059669)',
+  purple: 'linear-gradient(145deg,#c084fc,#9333ea)',
+  red:    'linear-gradient(145deg,#f87171,#dc2626)',
+  orange: 'linear-gradient(145deg,#fb923c,#ea580c)',
+  yellow: 'linear-gradient(145deg,#fbbf24,#d97706)',
+  teal:   'linear-gradient(145deg,#5eead4,#0d9488)',
+  pink:   'linear-gradient(145deg,#f472b6,#db2777)',
+  indigo: 'linear-gradient(145deg,#818cf8,#4f46e5)',
+  cyan:   'linear-gradient(145deg,#38bdf8,#0284c7)',
+  gray:   'linear-gradient(145deg,#9ca3af,#4b5563)',
+  rose:   'linear-gradient(145deg,#fb7185,#e11d48)',
+};
+
+// ═══════════════════════════════════════
+// SHEET_CONFIG — แก้ค่าตรงนี้หลัง deploy
+// ═══════════════════════════════════════
+const SHEET_CONFIG = {
+  webAppUrl:    '',   // ← Web App URL จาก Apps Script deploy
+  apiKey:       '',   // ← API Key ที่ตั้งใน PropertiesService: PORTAL_API_KEY
+  cacheMinutes: 5,    // TTL ของ memory/local cache (นาที)
+  retryCount:   3,    // จำนวน retry ถ้า fetch fail
+};
+
+const DEFAULT_APPS = [
+  {id:'conduct', name:'คะแนนความประพฤติ', icon:'🏅', color:'green',  url:'#', badge:3, enabled:true,  inDock:true,  sub:'Behavior Score System v5.0',    desc:'ระบบบันทึกและจัดการคะแนนความประพฤตินักเรียน รองรับการให้/ตัดคะแนน แยกตามชั้นเรียน พร้อมรายงานสรุป'},
+  {id:'homeroom', name:'เช็คโฮมรูม',       icon:'🏠', color:'blue',   url:'#', badge:0, enabled:true,  inDock:true,  sub:'Homeroom Check-in v8.0',         desc:'ระบบเช็คชื่อนักเรียนในชั่วโมงโฮมรูม รองรับการบันทึก มา/สาย/ลา/ขาด พร้อมแจ้งเตือน Telegram'},
+  {id:'flag',     name:'หน้าเสาธง',         icon:'🚩', color:'red',    url:'#', badge:0, enabled:true,  inDock:true,  sub:'Flag Ceremony Attendance',      desc:'ระบบเช็คชื่อกิจกรรมหน้าเสาธง บันทึกการเข้าแถวรายวัน พร้อม Chart สรุปและ CSV Export'},
+  {id:'attend',   name:'บันทึกเวลาเรียน',  icon:'📋', color:'purple', url:'#', badge:0, enabled:true,  inDock:false, sub:'Student Attendance System',     desc:'ระบบบันทึกเวลาเรียนรายวิชา รองรับ Role-based access (Admin/ครู) และ Dashboard analytics'},
+  {id:'qr',       name:'QR Scan',            icon:'📷', color:'indigo', url:'#', badge:0, enabled:true,  inDock:false, sub:'QR Code Scanner',               desc:'สแกน QR Code เพื่อเช็คชื่อนักเรียนอัตโนมัติ รองรับกล้องมือถือและ webcam'},
+  {id:'report',   name:'รายงานสรุป',        icon:'📊', color:'teal',   url:'#', badge:0, enabled:true,  inDock:false, sub:'Summary Report Dashboard',     desc:'Dashboard สรุปข้อมูลทุกระบบ แสดงสถิติ กราฟ และรายงานประจำวัน/สัปดาห์/เดือน'},
+  {id:'telegram', name:'Telegram แจ้งเตือน',icon:'💬', color:'cyan',   url:'#', badge:0, enabled:true,  inDock:false, sub:'Notification Center',           desc:'จัดการการแจ้งเตือนผ่าน Telegram Bot ตั้งค่า Token และ Chat ID สำหรับทุกระบบ'},
+  {id:'student',  name:'ข้อมูลนักเรียน',   icon:'👨‍🎓',color:'orange', url:'#', badge:0, enabled:true,  inDock:false, sub:'Student Database',              desc:'ฐานข้อมูลนักเรียนทั้งหมด แก้ไขข้อมูลชั้นเรียน ห้อง และประวัตินักเรียน'},
+  {id:'teacher',  name:'ข้อมูลครู',         icon:'👩‍🏫',color:'pink',   url:'#', badge:0, enabled:true,  inDock:false, sub:'Teacher Database',              desc:'ฐานข้อมูลครูและบุคลากร จัดการสิทธิ์การเข้าถึงระบบต่างๆ'},
+  {id:'schedule', name:'ตารางสอน',          icon:'📅', color:'yellow', url:'#', badge:0, enabled:true,  inDock:false, sub:'Class Schedule',                 desc:'ตารางสอนรายครู รายชั้น ประจำภาคเรียน'},
+];
+const DEFAULT_SCHOOL  = {name:'โรงเรียนปรางค์กู่', sub:'สพม.ศรีสะเกษ ยโสธร', emoji:'🏫', logoUrl:'https://img1.pic.in.th/images/LOGO--.png'};
+// password เก็บเป็น SHA-256 hex (passwordHash) หรือ plaintext legacy (password)
+const DEFAULT_ADMIN   = {username:'admin', passwordHash:'', password:'prangku2567'};
+
+// ═══════════════════════════════════════
+// STATE
+// ═══════════════════════════════════════
+let state = {
+  apps:      [],
+  school:    {...DEFAULT_SCHOOL},
+  admin:     {...DEFAULT_ADMIN},
+  isAdmin:   false,
+  pendingSave: null,
+  currentAppId: null,
+  editingAppId: null,
+};
+
+// ═══════════════════════════════════════
+// [SECURITY FIX #1] XSS PREVENTION — sanitize()
+// Escapes all dangerous HTML entities before inserting into innerHTML
+// ═══════════════════════════════════════
+function sanitize(str) {
+  if (str === null || str === undefined) return '';
+  return String(str)
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;')
+    .replace(/'/g, '&#x27;')
+    .replace(/\//g, '&#x2F;');
+}
+
+// ═══════════════════════════════════════
+// [SECURITY FIX #3] ADMIN SESSION EXPIRY — isSessionValid()
+// Session expires after 30 minutes of inactivity
+// ═══════════════════════════════════════
+const SESSION_TIMEOUT_MS = 30 * 60 * 1000; // 30 minutes
+
+function isSessionValid() {
+  const ts = parseInt(sessionStorage.getItem('portal_admin_ts') || '0');
+  if (!ts) return false;
+  return (Date.now() - ts) < SESSION_TIMEOUT_MS;
+}
+
+function requireValidSession() {
+  if (!state.isAdmin || !isSessionValid()) {
+    // Auto-logout
+    state.isAdmin = false;
+    sessionStorage.removeItem('portal_admin_session');
+    sessionStorage.removeItem('portal_admin_ts');
+    updateAdminUI();
+    closeModal('modalAdminPanel');
+    closeModal('modalAppEditor');
+    showToast('⏰ Session หมดอายุ — กรุณาเข้าสู่ระบบใหม่', 'warn');
+    setTimeout(() => openModal('modalAdminLogin'), 400);
+    return false;
+  }
+  return true;
+}
+
+// ═══════════════════════════════════════
+// SHA-256 — Web Crypto API
+// ═══════════════════════════════════════
+async function hashPassword(pw) {
+  const enc  = new TextEncoder();
+  const buf  = await crypto.subtle.digest('SHA-256', enc.encode(pw));
+  return Array.from(new Uint8Array(buf)).map(b => b.toString(16).padStart(2,'0')).join('');
+}
+
+/** เปรียบเทียบ password กับที่เก็บ (รองรับทั้ง hash และ plaintext legacy) */
+async function verifyPassword(inputPw) {
+  const ad = state.admin;
+  // ถ้ามี passwordHash → ใช้ SHA-256 compare
+  if (ad.passwordHash) {
+    const h = await hashPassword(inputPw);
+    return h === ad.passwordHash;
+  }
+  // legacy plaintext fallback
+  return inputPw === (ad.password || '');
+}
+
+// ═══════════════════════════════════════
+// STORAGE — localStorage + Sheets API Layer
+// ═══════════════════════════════════════
+
+// Memory cache (ป้องกัน re-fetch ก่อนหมด TTL)
+let _memCache     = null;   // { data, ts }
+let _saveQueue    = [];     // retry queue สำหรับ Sheets
+let _saveTimer    = null;
+
+/** บันทึก state ลง localStorage ทันที (optimistic) แล้ว async push ขึ้น Sheets */
+function saveState() {
+  // 1. localStorage ทันที
+  try {
+    localStorage.setItem('portal_apps',   JSON.stringify(state.apps));
+    localStorage.setItem('portal_school', JSON.stringify(state.school));
+    localStorage.setItem('portal_admin',  JSON.stringify(state.admin));
+    localStorage.setItem('portal_cache_ts', String(Date.now()));
+  } catch(e){}
+
+  // 2. อัปเดต memory cache
+  _memCache = { data: snapshot(), ts: Date.now() };
+
+  // 3. async push ขึ้น Sheets (ถ้าตั้งค่าแล้ว)
+  if (sheetsConfig.url) {
+    clearTimeout(_saveTimer);
+    _saveTimer = setTimeout(() => _pushToSheetsBackground(), 200);
+  }
+}
+
+async function _pushToSheetsBackground() {
+  try {
+    updateSyncDots('syncing');
+    await fetchFromSheet('saveApps',   { data: state.apps });
+    const schoolArr = Object.entries(state.school).map(([key,value]) => ({key,value}));
+    await fetchFromSheet('saveSchool', { data: schoolArr });
+    lastSyncTime = Date.now();
+    setText('last-sync-label', new Date(lastSyncTime).toLocaleTimeString('th-TH'));
+    updateSyncDots('ok');
+  } catch(err) {
+    updateSyncDots('warn');
+    showToast('⚠️ Sheets sync ล้มเหลว — ข้อมูลบันทึกใน localStorage แล้ว','warn');
+  }
+}
+
+/** โหลด state: memory cache → localStorage → Sheets */
+async function loadState() {
+  const CACHE_MS = (sheetsConfig.cacheMinutes || 5) * 60 * 1000;
+
+  // อ่าน localStorage ก่อน (เร็ว)
+  try {
+    const a  = localStorage.getItem('portal_apps');
+    const s  = localStorage.getItem('portal_school');
+    const ad = localStorage.getItem('portal_admin');
+    const ts = parseInt(localStorage.getItem('portal_cache_ts') || '0');
+    state.apps   = a  ? JSON.parse(a)  : [...DEFAULT_APPS];
+    state.school = s  ? JSON.parse(s)  : {...DEFAULT_SCHOOL};
+    state.admin  = ad ? JSON.parse(ad) : {...DEFAULT_ADMIN};
+    state.isAdmin = sessionStorage.getItem('portal_admin_session') === '1';
+
+    // ตั้ง memory cache จาก localStorage
+    if (ts) _memCache = { data: snapshot(), ts };
+  } catch(e) {
+    state.apps   = [...DEFAULT_APPS];
+    state.school = {...DEFAULT_SCHOOL};
+    state.admin  = {...DEFAULT_ADMIN};
+  }
+
+  // ถ้า memory cache ยังไม่หมด TTL → ใช้เลย ไม่ต้อง fetch
+  if (_memCache && (Date.now() - _memCache.ts) < CACHE_MS) return;
+
+  // ถ้าตั้งค่า Sheets แล้ว → fetch ข้อมูลใหม่ async (ไม่ block UI)
+  if (sheetsConfig.url) {
+    autoSyncFromSheets();
+  }
+}
+
+function snapshot() {
+  return { apps: JSON.parse(JSON.stringify(state.apps)), school: {...state.school}, admin: {...state.admin} };
+}
+
+// ═══════════════════════════════════════
+// API LAYER — fetchFromSheet (core)
+// ═══════════════════════════════════════
+
+/**
+ * Core fetch สำหรับเรียก Apps Script
+ * - GET action: ส่งผ่าน query params
+ * - POST action (payload.data): ส่งผ่าน body JSON
+ * - retry logic พร้อม exponential backoff
+ * - fallback localStorage cache ถ้า network fail
+ */
+async function fetchFromSheet(action, payload = {}, timeoutMs = 12000) {
+  if (!sheetsConfig.url) throw new Error('ยังไม่ได้ตั้งค่า Web App URL');
+
+  const isPost = payload.data !== undefined;
+  const maxRetry = sheetsConfig.retryCount || 3;
+  let lastErr;
+
+  for (let attempt = 1; attempt <= maxRetry; attempt++) {
+    try {
+      const result = isPost
+        ? await _doPost(action, payload, timeoutMs)
+        : await _doGet(action, payload, timeoutMs);
+      return result;
+    } catch(err) {
+      lastErr = err;
+      if (attempt < maxRetry) {
+        // exponential backoff: 500ms, 1000ms, 2000ms …
+        await _sleep(500 * Math.pow(2, attempt - 1));
+      }
+    }
+  }
+
+  // ทุก retry ล้มเหลว → throw เพื่อให้ caller fallback
+  throw lastErr;
+}
+
+async function _doGet(action, params = {}, timeoutMs = 12000) {
+  const qs  = new URLSearchParams({ apiKey: sheetsConfig.apiKey, action, ...params }).toString();
+  const url = sheetsConfig.url + '?' + qs;
+  const ctrl = new AbortController();
+  const tid  = setTimeout(() => ctrl.abort(), timeoutMs);
+  try {
+    const res  = await fetch(url, { method:'GET', signal:ctrl.signal, mode:'cors' });
+    clearTimeout(tid);
+    const json = await res.json();
+    if (!json.success) throw new Error(json.error || 'เกิดข้อผิดพลาดจาก Sheets');
+    return json.data;
+  } catch(e) { clearTimeout(tid); throw e; }
+}
+
+async function _doPost(action, payload = {}, timeoutMs = 15000) {
+  const body = JSON.stringify({ apiKey: sheetsConfig.apiKey, action, ...payload });
+  const ctrl = new AbortController();
+  const tid  = setTimeout(() => ctrl.abort(), timeoutMs);
+  try {
+    const res  = await fetch(sheetsConfig.url, {
+      method: 'POST', body,
+      headers: {'Content-Type':'application/json'},
+      signal: ctrl.signal, mode: 'cors',
+    });
+    clearTimeout(tid);
+    const json = await res.json();
+    if (!json.success) throw new Error(json.error || 'เกิดข้อผิดพลาด');
+    return json.data;
+  } catch(e) { clearTimeout(tid); throw e; }
+}
+
+// keep legacy aliases for compatibility
+async function gasCall(action, data={}, timeoutMs=12000) {
+  return _doGet(action, data, timeoutMs);
+}
+async function gasPost(action, payload={}) {
+  return _doPost(action, { data: payload });
+}
+
+function _sleep(ms) { return new Promise(r => setTimeout(r, ms)); }
+
+// ═══════════════════════════════════════
+// CLOCK
+// ═══════════════════════════════════════
+const DAYS = ['อาทิตย์','จันทร์','อังคาร','พุธ','พฤหัสบดี','ศุกร์','เสาร์'];
+const MONTHS = ['มกราคม','กุมภาพันธ์','มีนาคม','เมษายน','พฤษภาคม','มิถุนายน','กรกฎาคม','สิงหาคม','กันยายน','ตุลาคม','พฤศจิกายน','ธันวาคม'];
+
+function updateClock() {
+  const now = new Date();
+  const hh = String(now.getHours()).padStart(2,'0');
+  const mm = String(now.getMinutes()).padStart(2,'0');
+  const time = `${hh}:${mm}`;
+  const dayName = `วัน${DAYS[now.getDay()]}`;
+  const dateStr = `${now.getDate()} ${MONTHS[now.getMonth()]} ${now.getFullYear()+543}`;
+
+  setText('sb-time', time);
+  setText('sb-dayname', dayName);
+  setText('sb-date', dateStr);
+  setText('m-time', time);
+  setText('m-bigtime', time);
+  setText('m-dayname', dayName);
+  setText('m-date', dateStr);
+}
+function setText(id, val) { const el = document.getElementById(id); if(el) el.textContent = val; }
+
+// ═══════════════════════════════════════
+// RENDER
+// ═══════════════════════════════════════
+function renderSchoolInfo() {
+  const {name, sub, emoji, logoUrl} = state.school;
+  ['sb-school-name','m-school-name'].forEach(id => setText(id, name));
+  ['sb-school-sub'].forEach(id => setText(id, sub));
+
+  const sbEl = document.getElementById('sb-school-emoji');
+  if(sbEl) sbEl.innerHTML = logoURL_or_emoji_html(logoUrl, emoji, 'w-10 h-10', 'text-2xl');
+
+  const mEl = document.getElementById('m-school-emoji');
+  if(mEl) mEl.innerHTML = logoURL_or_emoji_html(logoUrl, emoji, 'w-5 h-5', 'text-base');
+}
+
+// [SECURITY FIX #1] sanitize() applied to logoUrl, emoji, imgClass, emojiClass before injecting into innerHTML
+function logoURL_or_emoji_html(logoUrl, emoji, imgClass, emojiClass) {
+  const safeEmoji    = sanitize(emoji || '🏫');
+  const safeImgClass = sanitize(imgClass);
+  const safeEmojiClass = sanitize(emojiClass);
+  if(logoUrl) {
+    const safeUrl = sanitize(logoUrl);
+    return `<img src="${safeUrl}" alt="logo" class="${safeImgClass} object-contain rounded-lg" onerror="this.outerHTML='<span class=\\'${safeEmojiClass}\\'>${safeEmoji}</span>'">`;
+  }
+  return `<span class="${safeEmojiClass}">${safeEmoji}</span>`;
+}
+
+function renderApps(filter='') {
+  const grid = document.getElementById('appGrid');
+  if(!grid) return;
+  const visible = state.apps.filter(a => a.enabled && (!filter || a.name.toLowerCase().includes(filter.toLowerCase())));
+
+  // [SECURITY FIX #1] All user-data fields are wrapped with sanitize() to prevent XSS
+  grid.innerHTML = visible.map((app, i) => `
+    <div class="app-item flex flex-col items-center gap-2 anim-pop d${Math.min(i+1,12)}" onclick="openAppDetail('${sanitize(app.id)}')">
+      <div class="icon-wrap icon-box flex items-center justify-center shadow-lg" style="background:${COLORS[sanitize(app.color)]||COLORS.blue}">
+        <span class="relative z-[2]">${sanitize(app.icon)}</span>
+        ${app.badge > 0 ? `<span class="absolute -top-1.5 -right-1.5 z-10 bg-red-500 text-white text-[10px] font-bold min-w-[18px] h-[18px] rounded-full flex items-center justify-center px-1 border-2 border-black/40 shadow">${sanitize(String(app.badge))}</span>` : ''}
+      </div>
+      <div class="text-white text-[11px] sm:text-xs font-medium text-center leading-tight max-w-[72px] line-clamp-2" style="text-shadow:0 1px 4px rgba(0,0,0,.6)">${sanitize(app.name)}</div>
+    </div>
+  `).join('');
+
+  renderDock();
+  renderSidebarNav();
+}
+
+function renderDock() {
+  const dock = document.getElementById('dockGrid');
+  if(!dock) return;
+  const dockApps = state.apps.filter(a => a.enabled && a.inDock).slice(0, 5);
+  // [SECURITY FIX #1] sanitize() applied to all user-controlled fields
+  dock.innerHTML = dockApps.map(app => `
+    <div class="app-item flex flex-col items-center gap-1" onclick="openAppDetail('${sanitize(app.id)}')">
+      <div class="icon-wrap w-14 h-14 rounded-[14px] flex items-center justify-center text-2xl shadow-md" style="background:${COLORS[sanitize(app.color)]||COLORS.blue}">
+        <span class="relative z-[2]">${sanitize(app.icon)}</span>
+      </div>
+    </div>
+  `).join('');
+}
+
+function renderSidebarNav() {
+  const nav = document.getElementById('sidebarNav');
+  if(!nav) return;
+  const apps = state.apps.filter(a => a.enabled).slice(0, 8);
+  // [SECURITY FIX #1] sanitize() applied to all user-controlled fields
+  nav.innerHTML = apps.map(app => `
+    <div class="sidebar-app flex items-center gap-3 px-2 py-2 cursor-pointer" onclick="openAppDetail('${sanitize(app.id)}')">
+      <div class="icon-wrap w-9 h-9 rounded-xl flex items-center justify-center text-lg shadow flex-shrink-0" style="background:${COLORS[sanitize(app.color)]||COLORS.blue}">
+        <span class="relative z-[2]">${sanitize(app.icon)}</span>
+      </div>
+      <span class="text-sm text-white/80 truncate">${sanitize(app.name)}</span>
+      ${app.badge > 0 ? `<span class="ml-auto bg-red-500 text-white text-[10px] font-bold min-w-[18px] h-[18px] rounded-full flex items-center justify-center px-1">${sanitize(String(app.badge))}</span>` : ''}
+    </div>
+  `).join('');
+}
+
+// ═══════════════════════════════════════
+// APP DETAIL MODAL
+// ═══════════════════════════════════════
+function openAppDetail(id) {
+  if(id === 'settings') { handleSettingsClick(); return; }
+  const app = state.apps.find(a => a.id === id);
+  if(!app) return;
+  state.currentAppId = id;
+  const icon = document.getElementById('d-icon');
+  icon.style.background = COLORS[app.color] || COLORS.blue;
+  icon.textContent = app.icon;
+  setText('d-name', app.name);
+  setText('d-sub', app.sub || '');
+  setText('d-desc', app.desc || '');
+  showModal('modalAppDetail');
+}
+function launchCurrentApp() {
+  const app = state.apps.find(a => a.id === state.currentAppId);
+  if(!app) return;
+  closeModal('modalAppDetail');
+  if(app.url && app.url !== '#') {
+    setTimeout(() => window.open(app.url, '_blank'), 300);
+  } else {
+    setTimeout(() => showToast(`🚀 ${app.name} — กรุณาตั้งค่า URL ก่อนใช้งาน`, 'warn'), 350);
+  }
+}
+
+// ═══════════════════════════════════════
+// SEARCH
+// ═══════════════════════════════════════
+function filterApps(q) { renderApps(q); }
+
+// ═══════════════════════════════════════
+// ADMIN AUTH
+// ═══════════════════════════════════════
+function handleSettingsClick() {
+  if(state.isAdmin) { openAdminPanel(); }
+  else              { openModal('modalAdminLogin'); }
+}
+
+async function doLogin() {
+  const u = document.getElementById('loginUser').value.trim();
+  const p = document.getElementById('loginPass').value;
+  const errEl = document.getElementById('loginError');
+
+  const usernameOk = (u === state.admin.username);
+  const passwordOk = await verifyPassword(p);
+
+  if(usernameOk && passwordOk) {
+    state.isAdmin = true;
+    sessionStorage.setItem('portal_admin_session','1');
+    sessionStorage.setItem('portal_admin_ts', String(Date.now())); // [SECURITY FIX #3] record login timestamp
+    errEl.classList.add('hidden');
+    document.getElementById('loginUser').value = '';
+    document.getElementById('loginPass').value = '';
+    closeModal('modalAdminLogin');
+    updateAdminUI();
+    setTimeout(() => openAdminPanel(), 300);
+    showToast('✅ เข้าสู่ระบบสำเร็จ', 'success');
+  } else {
+    errEl.classList.remove('hidden');
+    const box = document.getElementById('loginPass');
+    box.classList.add('anim-shake');
+    box.addEventListener('animationend', () => box.classList.remove('anim-shake'), {once:true});
+  }
+}
+
+function logoutAdmin() {
+  state.isAdmin = false;
+  sessionStorage.removeItem('portal_admin_session');
+  closeModal('modalAdminPanel');
+  updateAdminUI();
+  showToast('👋 ออกจากระบบแล้ว', 'info');
+}
+
+function updateAdminUI() {
+  const pill = document.getElementById('admin-pill');
+  const sb   = document.getElementById('admin-badge-sb');
+  if(state.isAdmin) {
+    pill && pill.classList.remove('hidden');
+    sb   && sb.classList.remove('hidden');
+  } else {
+    pill && pill.classList.add('hidden');
+    sb   && sb.classList.add('hidden');
+  }
+}
+
+function openAdminPanel() {
+  // [SECURITY FIX #3] Validate session before opening admin panel
+  if (!requireValidSession()) return;
+  // Populate school fields
+  document.getElementById('sc-name').value  = state.school.name;
+  document.getElementById('sc-sub').value   = state.school.sub;
+  document.getElementById('sc-emoji').value = state.school.emoji || '🏫';
+  document.getElementById('sc-logo').value  = state.school.logoUrl || '';
+  previewLogo(state.school.logoUrl || '');
+  document.getElementById('pw-user').value  = state.admin.username;
+  document.getElementById('pw-new').value   = '';
+  document.getElementById('pw-confirm').value = '';
+  renderAdminAppList();
+  switchTab('apps');
+  openModal('modalAdminPanel');
+}
+
+// ═══════════════════════════════════════
+// CONFIRM PASSWORD
+// ═══════════════════════════════════════
+function requirePassword(callback) {
+  state.pendingSave = callback;
+  document.getElementById('confirmPwInput').value = '';
+  document.getElementById('confirmPwError').classList.add('hidden');
+  openModal('modalConfirmPw');
+  setTimeout(() => document.getElementById('confirmPwInput').focus(), 200);
+}
+
+async function doConfirmPw() {
+  const pw = document.getElementById('confirmPwInput').value;
+  const errEl = document.getElementById('confirmPwError');
+  const ok = await verifyPassword(pw);
+  if(ok) {
+    errEl.classList.add('hidden');
+    closeModal('modalConfirmPw');
+    document.getElementById('confirmPwInput').value = '';
+    if(typeof state.pendingSave === 'function') {
+      const cb = state.pendingSave;
+      state.pendingSave = null;
+      cb();
+    }
+  } else {
+    errEl.classList.remove('hidden');
+    const box = document.getElementById('confirmPwBox');
+    box.classList.add('anim-shake');
+    box.addEventListener('animationend', () => box.classList.remove('anim-shake'), {once:true});
+    document.getElementById('confirmPwInput').value = '';
+    document.getElementById('confirmPwInput').focus();
+  }
+}
+
+function cancelConfirmPw() {
+  state.pendingSave = null;
+  closeModal('modalConfirmPw');
+}
+
+// ═══════════════════════════════════════
+// ADMIN: APP LIST
+// ═══════════════════════════════════════
+function renderAdminAppList() {
+  const list = document.getElementById('adminAppList');
+  if(!list) return;
+  // [SECURITY FIX #1] sanitize() applied to all user-controlled fields
+  list.innerHTML = state.apps.map(app => `
+    <div class="glass-med rounded-2xl px-4 py-3 flex items-center gap-3">
+      <div class="icon-wrap w-10 h-10 rounded-xl flex items-center justify-center text-xl shadow flex-shrink-0" style="background:${COLORS[sanitize(app.color)]||COLORS.blue}">
+        <span class="relative z-[2]">${sanitize(app.icon)}</span>
+      </div>
+      <div class="flex-1 min-w-0">
+        <div class="font-semibold text-sm truncate">${sanitize(app.name)}</div>
+        <div class="text-white/45 text-xs truncate">${app.url && app.url !== '#' ? '🔗 ตั้งค่าแล้ว' : '⚠️ ยังไม่มี URL'}</div>
+      </div>
+      <div class="flex items-center gap-2">
+        <span class="text-xs px-2 py-0.5 rounded-full ${app.enabled ? 'bg-green-500/20 text-green-400' : 'bg-red-500/20 text-red-400'}">${app.enabled ? 'เปิด' : 'ปิด'}</span>
+        <button onclick="openAppEditor('${sanitize(app.id)}')" class="w-8 h-8 glass rounded-xl flex items-center justify-center hover:bg-white/20 transition text-sm">✏️</button>
+      </div>
+    </div>
+  `).join('');
+}
+
+// ═══════════════════════════════════════
+// ADMIN: APP EDITOR
+// ═══════════════════════════════════════
+function buildColorPicker(selected) {
+  const picker = document.getElementById('colorPicker');
+  // [BUG FIX #2] Pass 'this' as second argument so selectColor receives the element directly
+  picker.innerHTML = Object.keys(COLORS).map(c => `
+    <div class="color-btn ${c===selected?'selected':''}" style="background:${COLORS[c]}" onclick="selectColor('${sanitize(c)}', this)"></div>
+  `).join('');
+  document.getElementById('e-color').value = selected;
+}
+
+// [BUG FIX #2] Accept el as parameter instead of relying on global event.target
+function selectColor(c, el) {
+  document.getElementById('e-color').value = c;
+  document.querySelectorAll('.color-btn').forEach(btn => btn.classList.remove('selected'));
+  el.classList.add('selected');
+}
+
+function openAppEditor(id) {
+  state.editingAppId = id;
+  const isNew = !id;
+  setText('editor-title', isNew ? '➕ เพิ่มระบบใหม่' : '✏️ แก้ไขระบบ');
+  document.getElementById('btn-delete-app').classList.toggle('hidden', isNew);
+
+  if(isNew) {
+    document.getElementById('e-id').value      = '';
+    document.getElementById('e-icon').value    = '🔧';
+    document.getElementById('e-name').value    = '';
+    document.getElementById('e-sub').value     = '';
+    document.getElementById('e-url').value     = '';
+    document.getElementById('e-desc').value    = '';
+    document.getElementById('e-badge').value   = '0';
+    document.getElementById('e-enabled').value = 'true';
+    document.getElementById('e-dock').value    = 'false';
+    setToggle('toggle-enabled', true);
+    setToggle('toggle-dock', false);
+    buildColorPicker('blue');
+  } else {
+    const app = state.apps.find(a => a.id === id);
+    if(!app) return;
+    document.getElementById('e-id').value      = app.id;
+    document.getElementById('e-icon').value    = app.icon;
+    document.getElementById('e-name').value    = app.name;
+    document.getElementById('e-sub').value     = app.sub || '';
+    document.getElementById('e-url').value     = app.url || '';
+    document.getElementById('e-desc').value    = app.desc || '';
+    document.getElementById('e-badge').value   = app.badge || 0;
+    document.getElementById('e-enabled').value = String(app.enabled);
+    document.getElementById('e-dock').value    = String(app.inDock);
+    setToggle('toggle-enabled', app.enabled);
+    setToggle('toggle-dock', app.inDock);
+    buildColorPicker(app.color || 'blue');
+  }
+  openModal('modalAppEditor');
+}
+
+function saveAppFromEditor() {
+  // [SECURITY FIX #3] Validate session
+  if (!requireValidSession()) return;
+
+  const name  = document.getElementById('e-name').value.trim();
+  const url   = document.getElementById('e-url').value.trim() || '#';
+  const badge = document.getElementById('e-badge').value;
+  const icon  = document.getElementById('e-icon').value.trim();
+
+  // [SECURITY FIX #4] Clear previous error hints
+  document.querySelectorAll('.error-hint').forEach(el => el.remove());
+
+  let hasError = false;
+
+  // Validate: name ≤ 50 chars and not empty
+  if (!name) {
+    showFieldError('e-name', 'กรุณากรอกชื่อระบบ');
+    hasError = true;
+  } else if (name.length > 50) {
+    showFieldError('e-name', 'ชื่อระบบต้องไม่เกิน 50 ตัวอักษร');
+    hasError = true;
+  }
+
+  // Validate: url must start with https://, http://, or be exactly '#'
+  if (url !== '#' && !/^https?:\/\//i.test(url)) {
+    showFieldError('e-url', 'URL ต้องขึ้นต้นด้วย https:// หรือ http:// หรือใช้ # สำหรับลิงก์ว่าง');
+    hasError = true;
+  }
+
+  // Validate: badge must be integer 0-99
+  const badgeNum = parseInt(badge);
+  if (badge !== '' && (isNaN(badgeNum) || badgeNum < 0 || badgeNum > 99)) {
+    showFieldError('e-badge', 'Badge ต้องเป็นตัวเลข 0–99');
+    hasError = true;
+  }
+
+  // Validate: icon must be an emoji (Unicode range check)
+  if (!isEmoji(icon)) {
+    showFieldError('e-icon', 'ไอคอนต้องเป็น Emoji เท่านั้น');
+    hasError = true;
+  }
+
+  if (hasError) return;
+
+  requirePassword(() => {
+    const isNew  = !state.editingAppId;
+    const newId  = state.editingAppId || ('app_' + Date.now());
+    const appData = {
+      id:      newId,
+      name:    name,
+      icon:    icon || '🔧',
+      sub:     document.getElementById('e-sub').value.trim(),
+      url:     url,
+      desc:    document.getElementById('e-desc').value.trim(),
+      color:   document.getElementById('e-color').value || 'blue',
+      badge:   badgeNum || 0,
+      enabled: document.getElementById('e-enabled').value === 'true',
+      inDock:  document.getElementById('e-dock').value === 'true',
+    };
+    if(isNew) {
+      state.apps.push(appData);
+    } else {
+      const idx = state.apps.findIndex(a => a.id === state.editingAppId);
+      if(idx !== -1) state.apps[idx] = appData;
+    }
+    saveState();
+    renderApps();
+    renderAdminAppList();
+    closeModal('modalAppEditor');
+    showToast(isNew ? '✅ เพิ่มระบบสำเร็จ' : '✅ บันทึกการแก้ไขสำเร็จ', 'success');
+  });
+}
+
+// [SECURITY FIX #4] Helper: show error hint below a field
+function showFieldError(fieldId, msg) {
+  const field = document.getElementById(fieldId);
+  if (!field) return;
+  const hint = document.createElement('div');
+  hint.className = 'error-hint text-red-400 text-sm mt-1 px-1';
+  hint.textContent = msg;
+  field.parentNode.insertBefore(hint, field.nextSibling);
+}
+
+// [SECURITY FIX #4] Helper: check if string is emoji using Unicode ranges
+function isEmoji(str) {
+  if (!str || str.length === 0) return false;
+  // Match emoji characters via Unicode property escape
+  const emojiRegex = /^(\p{Emoji_Presentation}|\p{Extended_Pictographic}|\u00a9|\u00ae|[\u2000-\u3300])/u;
+  return emojiRegex.test(str.trim());
+}
+
+function deleteCurrentApp() {
+  // [SECURITY FIX #3] Validate session
+  if (!requireValidSession()) return;
+  requirePassword(() => {
+    state.apps = state.apps.filter(a => a.id !== state.editingAppId);
+    saveState();
+    renderApps();
+    renderAdminAppList();
+    closeModal('modalAppEditor');
+    showToast('🗑️ ลบระบบแล้ว', 'info');
+  });
+}
+
+// ═══════════════════════════════════════
+// ADMIN: SCHOOL SETTINGS
+// ═══════════════════════════════════════
+function saveSchoolSettings() {
+  // [SECURITY FIX #3] Validate session
+  if (!requireValidSession()) return;
+  const name    = document.getElementById('sc-name').value.trim();
+  const sub     = document.getElementById('sc-sub').value.trim();
+  const emoji   = document.getElementById('sc-emoji').value.trim();
+  const logoUrl = document.getElementById('sc-logo').value.trim();
+  if(!name) { showToast('⚠️ กรุณากรอกชื่อโรงเรียน', 'warn'); return; }
+
+  requirePassword(async () => {
+    state.school = {name, sub, emoji: emoji || '🏫', logoUrl};
+    saveState();
+    renderSchoolInfo();
+    previewLogo(logoUrl);
+    // ถ้าตั้งค่า Sheets แล้ว → Push ขึ้น Sheets ทันที ให้ทุกคนเห็นพร้อมกัน
+    if(sheetsConfig.url) {
+      try {
+        updateSyncDots('syncing');
+        const schoolArr = Object.entries(state.school).map(([key,value]) => ({key,value}));
+        await fetchFromSheet('saveSchool', { data: schoolArr });
+        lastSyncTime = Date.now();
+        setText('last-sync-label', new Date(lastSyncTime).toLocaleTimeString('th-TH'));
+        updateSyncDots('ok');
+        showToast('✅ บันทึกและซิงค์ข้อมูลโรงเรียนขึ้น Sheets สำเร็จ', 'success');
+      } catch(err) {
+        updateSyncDots('err');
+        showToast('✅ บันทึกแล้ว (Sheets sync ล้มเหลว: ' + err.message + ')', 'warn');
+      }
+    } else {
+      showToast('✅ บันทึกข้อมูลโรงเรียนสำเร็จ', 'success');
+    }
+  });
+}
+
+function previewLogo(url) {
+  const img  = document.getElementById('logo-preview-img');
+  const icon = document.getElementById('logo-preview-emoji');
+  if(!img) return;
+  if(url) {
+    img.src = url;
+    img.style.display = 'block';
+    icon && (icon.style.display = 'none');
+  } else {
+    img.style.display = 'none';
+    icon && (icon.style.display = 'flex');
+  }
+}
+
+// ═══════════════════════════════════════
+// ADMIN: CHANGE PASSWORD
+// ═══════════════════════════════════════
+function changePassword() {
+  // [SECURITY FIX #3] Validate session
+  if (!requireValidSession()) return;
+  const newUser = document.getElementById('pw-user').value.trim();
+  const newPw   = document.getElementById('pw-new').value;
+  const confirm = document.getElementById('pw-confirm').value;
+  const matchEl = document.getElementById('pw-match-error');
+
+  if(!newUser || !newPw) { showToast('⚠️ กรุณากรอกข้อมูลให้ครบ', 'warn'); return; }
+  if(newPw !== confirm) {
+    matchEl.classList.remove('hidden');
+    return;
+  }
+  matchEl.classList.add('hidden');
+
+  requirePassword(async () => {
+    const h = await hashPassword(newPw);
+    state.admin = { username: newUser, passwordHash: h, password: '' };
+    saveState();
+    // Push ขึ้น Sheets ถ้าตั้งค่าแล้ว
+    if (sheetsConfig.url) {
+      try {
+        await fetchFromSheet('saveAdmin', { data: [{ username: newUser, passwordHash: h, lastLogin: '' }] });
+        showToast('✅ เปลี่ยนรหัสผ่านและซิงค์ Sheets สำเร็จ', 'success');
+      } catch(_) {
+        showToast('✅ เปลี่ยนรหัสผ่านสำเร็จ (Sheets sync ล้มเหลว)', 'warn');
+      }
+    } else {
+      showToast('✅ เปลี่ยนรหัสผ่านสำเร็จ', 'success');
+    }
+    document.getElementById('pw-new').value     = '';
+    document.getElementById('pw-confirm').value = '';
+  });
+}
+
+// ═══════════════════════════════════════
+// ADMIN: TABS
+// ═══════════════════════════════════════
+function switchTab(tab) {
+  ['apps','school','password','sheets'].forEach(t => {
+    const p = document.getElementById(`panel-${t}`);
+    const b = document.getElementById(`tab-${t}`);
+    if(p) p.classList.add('hidden');
+    if(b) b.classList.remove('active');
+  });
+  document.getElementById(`panel-${tab}`).classList.remove('hidden');
+  document.getElementById(`tab-${tab}`).classList.add('active');
+  if(tab === 'sheets') populateSheetsPanel();
+}
+
+// ═══════════════════════════════════════
+// UI HELPERS
+// ═══════════════════════════════════════
+function openModal(id)  { document.getElementById(id).classList.remove('hidden'); }
+function closeModal(id) { document.getElementById(id).classList.add('hidden'); }
+
+function showModal(id) {
+  const el = document.getElementById(id);
+  el.classList.remove('hidden');
+  const inner = el.querySelector('[class*="anim-"]');
+  if(inner){ inner.classList.remove('anim-sheet','anim-up'); void inner.offsetWidth; inner.classList.add(id.includes('Detail')?'anim-sheet':'anim-up'); }
+}
+
+function closeIfBackdrop(e, id) {
+  if(e.target === document.getElementById(id)) closeModal(id);
+}
+
+function togglePw(inputId, btn) {
+  const inp = document.getElementById(inputId);
+  if(inp.type === 'password') { inp.type = 'text'; btn.textContent = '🙈'; }
+  else                        { inp.type = 'password'; btn.textContent = '👁️'; }
+}
+
+function setToggle(trackId, value) {
+  const el = document.getElementById(trackId);
+  if(!el) return;
+  if(value) el.classList.add('on'); else el.classList.remove('on');
+}
+
+function toggleSwitch(trackEl, hiddenId) {
+  const isOn = trackEl.classList.toggle('on');
+  const hidden = document.getElementById(hiddenId);
+  if(hidden) hidden.value = String(isOn);
+}
+
+// ═══════════════════════════════════════
+// TOAST
+// ═══════════════════════════════════════
+function showToast(msg, type='info') {
+  const container = document.getElementById('toastContainer');
+  const colors = {success:'bg-green-500/20 border-green-500/40 text-green-300', warn:'bg-yellow-500/20 border-yellow-500/40 text-yellow-300', info:'bg-blue-500/20 border-blue-500/40 text-blue-300', error:'bg-red-500/20 border-red-500/40 text-red-300'};
+  const div = document.createElement('div');
+  div.className = `anim-toast pointer-events-auto backdrop-blur-xl border rounded-2xl px-5 py-3 text-sm font-semibold shadow-xl max-w-xs text-center ${colors[type]||colors.info}`;
+  div.textContent = msg;
+  container.appendChild(div);
+  setTimeout(() => { div.style.opacity='0'; div.style.transform='scale(0.9)'; div.style.transition='all .3s'; setTimeout(()=>div.remove(), 300); }, 2800);
+}
+
+// ═══════════════════════════════════════
+// KEYBOARD
+// ═══════════════════════════════════════
+document.addEventListener('keydown', e => {
+  if(e.key === 'Escape') {
+    ['modalConfirmPw','modalAppEditor','modalAdminPanel','modalAdminLogin','modalAppDetail'].forEach(id => {
+      if(!document.getElementById(id).classList.contains('hidden')) { closeModal(id); }
+    });
+  }
+  if(e.key === 'Enter' && !document.getElementById('modalConfirmPw').classList.contains('hidden')) {
+    doConfirmPw();
+  }
+});
+
+// ═══════════════════════════════════════
+// GOOGLE SHEETS SYSTEM
+// ═══════════════════════════════════════
+
+const GAS_CODE = `// ══════════════════════════════════════════════════════════════════
+// School Portal — Google Apps Script (Code.gs) v3.0
+// โรงเรียนปรางค์กู่ | สพม.ศรีสะเกษ ยโสธร
+// Deploy: Execute as Me | Access: Anyone
+// ══════════════════════════════════════════════════════════════════
+
+const SS_ID   = '';  // ← วาง Spreadsheet ID ของคุณที่นี่
+const API_KEY = PropertiesService.getScriptProperties().getProperty('PORTAL_API_KEY');
+
+function doGet(e)  { return handle(e); }
+function doPost(e) { return handle(e); }
+
+function handle(e) {
+  const out = ContentService.createTextOutput();
+  out.setMimeType(ContentService.MimeType.JSON);
+  try {
+    const p = e.parameter || {};
+    const b = (() => { try { return JSON.parse(e.postData && e.postData.contents ? e.postData.contents : '{}'); } catch(_){ return {}; } })();
+    const params = Object.assign({}, p, b);
+    if (!params.apiKey || params.apiKey !== API_KEY) {
+      out.setContent(JSON.stringify({ success: false, error: 'Unauthorized: invalid API key' }));
+      return out;
+    }
+    if (!SS_ID) {
+      out.setContent(JSON.stringify({ success: false, error: 'SS_ID not configured in Code.gs' }));
+      return out;
+    }
+    const ss = SpreadsheetApp.openById(SS_ID);
+    let result;
+    switch (params.action) {
+      case 'ping':             result = { pong: true, ts: new Date().toISOString(), version: '3.0' }; break;
+      case 'getAll':           result = getAllData(ss); break;
+      case 'saveApps':         result = saveSheet(ss, 'Apps', params.data); appendAuditLog(ss, { action:'saveApps', user:params.user||'admin', detail:(params.data||[]).length+' apps' }); break;
+      case 'saveSchool':       result = saveSheet(ss, 'School', params.data); appendAuditLog(ss, { action:'saveSchool', user:params.user||'admin', detail:'school updated' }); break;
+      case 'saveAdmin':        result = saveSheet(ss, 'Admin', params.data); appendAuditLog(ss, { action:'saveAdmin', user:params.user||'admin', detail:'credentials updated' }); break;
+      case 'saveAnnouncements':result = saveSheet(ss, 'Announcements', params.data); break;
+      case 'saveConfig':       result = saveSheet(ss, 'Config', params.data); break;
+      case 'checkHealth':      result = checkHealth(ss); break;
+      case 'initSheets':       result = initSheets(ss); break;
+      case 'auditLog':         result = appendAuditLog(ss, params.data || {}); break;
+      default: out.setContent(JSON.stringify({ success:false, error:'Unknown action: '+params.action })); return out;
+    }
+    out.setContent(JSON.stringify({ success: true, data: result }));
+  } catch (err) {
+    out.setContent(JSON.stringify({ success: false, error: err.message || String(err) }));
+  }
+  return out;
+}
+
+function getAllData(ss) {
+  return {
+    apps:          sheetToObjects(ss, 'Apps'),
+    school:        sheetToKV(ss, 'School'),
+    admin:         sheetToObjects(ss, 'Admin'),
+    announcements: sheetToObjects(ss, 'Announcements'),
+    config:        sheetToKV(ss, 'Config'),
+  };
+}
+
+function sheetToObjects(ss, name) {
+  const sh = ss.getSheetByName(name);
+  if (!sh || sh.getLastRow() < 2) return [];
+  const [headers, ...rows] = sh.getDataRange().getValues();
+  return rows.filter(r => r[0] !== '' && r[0] !== null).map(r => {
+    const obj = {};
+    headers.forEach((h, i) => {
+      const v = r[i];
+      if (v === 'TRUE'  || v === true)  { obj[h] = true;  return; }
+      if (v === 'FALSE' || v === false) { obj[h] = false; return; }
+      obj[h] = v;
+    });
+    return obj;
+  });
+}
+
+function sheetToKV(ss, name) {
+  const sh = ss.getSheetByName(name);
+  if (!sh || sh.getLastRow() < 2) return {};
+  const rows = sh.getDataRange().getValues();
+  const obj  = {};
+  rows.slice(1).forEach(r => { if (r[0] !== '' && r[0] !== null) obj[String(r[0])] = r[1]; });
+  return obj;
+}
+
+function saveSheet(ss, name, data) {
+  let sh = ss.getSheetByName(name);
+  if (!sh) sh = ss.insertSheet(name);
+  sh.clearContents();
+  if (!data || !Array.isArray(data) || !data.length) return { saved: 0 };
+  const headers = Object.keys(data[0]);
+  const rows = data.map(o => headers.map(h => {
+    const v = o[h];
+    if (v === true)  return 'TRUE';
+    if (v === false) return 'FALSE';
+    return v !== undefined && v !== null ? v : '';
+  }));
+  sh.getRange(1, 1, 1, headers.length).setValues([headers]);
+  if (rows.length) sh.getRange(2, 1, rows.length, headers.length).setValues(rows);
+  return { saved: rows.length, sheet: name };
+}
+
+function checkHealth(ss) {
+  return ['Apps','School','Admin','Announcements','AuditLog','Config'].map(name => {
+    const sh = ss.getSheetByName(name);
+    return { name, exists: !!sh, rows: sh ? Math.max(0, sh.getLastRow()-1) : 0 };
+  });
+}
+
+function initSheets(ss) {
+  const SCHEMAS = {
+    Apps:          ['id','name','icon','color','url','sub','desc','badge','enabled','inDock','order'],
+    School:        ['key','value'],
+    Admin:         ['username','passwordHash','lastLogin'],
+    Announcements: ['id','title','body','type','startDate','endDate','active'],
+    AuditLog:      ['timestamp','action','user','detail','ip'],
+    Config:        ['key','value'],
+  };
+  const results = [];
+  for (const [name, headers] of Object.entries(SCHEMAS)) {
+    let sh = ss.getSheetByName(name);
+    if (!sh) {
+      sh = ss.insertSheet(name);
+      sh.getRange(1,1,1,headers.length).setValues([headers]);
+      const hr = sh.getRange(1,1,1,headers.length);
+      hr.setBackground('#1a1a2e'); hr.setFontColor('#ffffff'); hr.setFontWeight('bold');
+      results.push({ name, created: true });
+    } else {
+      results.push({ name, created: false });
+    }
+  }
+  return results;
+}
+
+function appendAuditLog(ss, data) {
+  try {
+    let sh = ss.getSheetByName('AuditLog');
+    if (!sh) { sh = ss.insertSheet('AuditLog'); sh.appendRow(['timestamp','action','user','detail','ip']); }
+    sh.appendRow([new Date().toISOString(), data.action||'', data.user||'portal', data.detail||'', data.ip||'']);
+    return { ok: true };
+  } catch (err) { return { ok: false, error: err.message }; }
+}
+
+function sha256Hex(input) {
+  const raw = Utilities.computeDigest(Utilities.DigestAlgorithm.SHA_256, input, Utilities.Charset.UTF_8);
+  return raw.map(b => ('0'+(b&0xff).toString(16)).slice(-2)).join('');
+}`;
+
+// ── Sheet Config State ──
+const SHEETS_DEFAULT = { url:'', apiKey:'', cacheMinutes:5, retryCount:3 };
+let sheetsConfig = {...SHEETS_DEFAULT};
+let syncStatus   = 'idle'; // idle | syncing | ok | warn | err
+let lastSyncTime = null;
+let sheetsCfgChanged = false;
+
+function loadSheetsConfig() {
+  try {
+    const s = localStorage.getItem('portal_sheets_cfg');
+    if(s) sheetsConfig = {...SHEETS_DEFAULT, ...JSON.parse(s)};
+  } catch(_){}
+  updateSyncDots(sheetsConfig.url ? 'warn' : 'idle');
+}
+
+function saveSheetsConfigLocal() {
+  try { localStorage.setItem('portal_sheets_cfg', JSON.stringify(sheetsConfig)); } catch(_){}
+}
+
+function sheetsCfgDirty() {
+  sheetsCfgChanged = true;
+  document.getElementById('btn-save-cfg').textContent = '💾 บันทึก (มีการเปลี่ยนแปลง)';
+}
+
+// ── Populate Sheets Panel ──
+function populateSheetsPanel() {
+  document.getElementById('gs-url').value   = sheetsConfig.url || '';
+  document.getElementById('gs-key').value   = sheetsConfig.apiKey || '';
+  document.getElementById('gs-cache').value = sheetsConfig.cacheMinutes || 5;
+  document.getElementById('gs-retry').value = sheetsConfig.retryCount || 3;
+  renderHealthList([]);
+  updateSheetsStatusCard();
+  sheetsCfgChanged = false;
+  document.getElementById('btn-save-cfg').textContent = '💾 บันทึกการตั้งค่า';
+  const ls = lastSyncTime ? new Date(lastSyncTime).toLocaleTimeString('th-TH') : 'ยังไม่เคย';
+  setText('last-sync-label', ls);
+}
+
+function saveSheetConfig() {
+  sheetsConfig.url          = document.getElementById('gs-url').value.trim();
+  sheetsConfig.apiKey       = document.getElementById('gs-key').value.trim();
+  sheetsConfig.cacheMinutes = parseInt(document.getElementById('gs-cache').value)||5;
+  sheetsConfig.retryCount   = parseInt(document.getElementById('gs-retry').value)||3;
+  saveSheetsConfigLocal();
+  sheetsCfgChanged = false;
+  document.getElementById('btn-save-cfg').textContent = '💾 บันทึกการตั้งค่า';
+  showToast('✅ บันทึกการตั้งค่า Sheets แล้ว','success');
+  updateSyncDots(sheetsConfig.url ? 'warn' : 'idle');
+}
+
+
+// ── Test Connection ──
+async function testSheetConnection() {
+  const url = document.getElementById('gs-url').value.trim();
+  const key = document.getElementById('gs-key').value.trim();
+  if(!url) { showToast('⚠️ กรุณากรอก Web App URL ก่อน','warn'); return; }
+
+  const box    = document.getElementById('conn-result-box');
+  const icon   = document.getElementById('conn-result-icon');
+  const title  = document.getElementById('conn-result-title');
+  const detail = document.getElementById('conn-result-detail');
+  const fill   = document.getElementById('conn-lat-fill');
+  const latLbl = document.getElementById('conn-lat-label');
+  const btn    = document.getElementById('btn-test-conn');
+
+  box.classList.remove('hidden');
+  icon.textContent   = '⏳';
+  title.textContent  = 'กำลังทดสอบการเชื่อมต่อ...';
+  detail.textContent = url.substring(0,55)+'...';
+  fill.style.width   = '0%';
+  latLbl.textContent = '';
+  btn.disabled       = true;
+  btn.textContent    = '🔄 กำลังทดสอบ...';
+  updateSyncDots('syncing');
+
+  const t0 = Date.now();
+  try {
+    const testUrl = url + '?apiKey=' + encodeURIComponent(key) + '&action=ping';
+    const ctrl    = new AbortController();
+    const tid     = setTimeout(() => ctrl.abort(), 10000);
+    const res     = await fetch(testUrl, { signal:ctrl.signal, mode:'cors' });
+    clearTimeout(tid);
+    const latency = Date.now() - t0;
+    const json    = await res.json();
+
+    if(json.success) {
+      icon.textContent   = '✅';
+      title.textContent  = 'เชื่อมต่อสำเร็จ!';
+      detail.textContent = `ตอบสนองใน ${latency} ms — Apps Script พร้อมใช้งาน`;
+      const pct = Math.min(100, Math.round((latency/3000)*100));
+      fill.style.background = latency<800 ? '#30d158' : latency<2000 ? '#f59e0b' : '#ef4444';
+      fill.style.width = pct + '%';
+      latLbl.textContent = latency < 800 ? '⚡ เร็วมาก' : latency < 2000 ? '✓ ปกติ' : '⚠️ ช้ากว่าปกติ';
+      updateSyncDots('ok');
+      updateSheetsStatusCard('ok', latency);
+    } else {
+      throw new Error(json.error || 'ตอบกลับแต่ไม่สำเร็จ');
+    }
+  } catch(err) {
+    const latency = Date.now() - t0;
+    icon.textContent   = '❌';
+    title.textContent  = 'เชื่อมต่อไม่สำเร็จ';
+    detail.textContent = err.name==='AbortError' ? 'หมดเวลา (timeout 10s) — ตรวจสอบ URL และ deploy อีกครั้ง' : err.message;
+    fill.style.background = '#ef4444';
+    fill.style.width = '100%';
+    latLbl.textContent = `ใช้เวลา ${latency} ms`;
+    updateSyncDots('err');
+    updateSheetsStatusCard('err');
+  }
+  btn.disabled      = false;
+  btn.textContent   = '🔌 ทดสอบการเชื่อมต่อ';
+}
+
+// ── Pull from Sheets ──
+async function pullFromSheets() {
+  if(!sheetsConfig.url) { showToast('⚠️ ยังไม่ได้ตั้งค่า URL','warn'); return; }
+  const btn = document.getElementById('btn-pull');
+  btn.disabled     = true;
+  btn.textContent  = '⏳ กำลังโหลด...';
+  updateSyncDots('syncing');
+  try {
+    const data = await fetchFromSheet('getAll');
+    if(data.apps   && data.apps.length)   state.apps   = data.apps;
+    if(data.school && Object.keys(data.school).length) {
+      state.school = { name: data.school.name||state.school.name, sub:data.school.sub||state.school.sub, emoji:data.school.emoji||state.school.emoji, logoUrl:data.school.logoUrl!==undefined?data.school.logoUrl:state.school.logoUrl };
+    }
+    if(data.admin  && data.admin.length)  {
+      state.admin = {
+        username:     data.admin[0].username     || state.admin.username,
+        passwordHash: data.admin[0].passwordHash || state.admin.passwordHash || '',
+        password:     '',
+      };
+    }
+    saveState();
+    renderApps();
+    renderSchoolInfo();
+    renderAdminAppList();
+    lastSyncTime = Date.now();
+    setText('last-sync-label', new Date(lastSyncTime).toLocaleTimeString('th-TH'));
+    updateSyncDots('ok');
+    showToast('✅ ดึงข้อมูลจาก Sheets สำเร็จ','success');
+  } catch(err) {
+    updateSyncDots('err');
+    showToast('❌ ' + err.message,'error');
+  }
+  btn.disabled    = false;
+  btn.textContent = 'Pull';
+}
+
+// ── Push to Sheets ──
+function pushToSheets() {
+  if(!sheetsConfig.url) { showToast('⚠️ ยังไม่ได้ตั้งค่า URL','warn'); return; }
+  requirePassword(async () => {
+    const btn = document.getElementById('btn-push');
+    btn.disabled    = true;
+    btn.textContent = '⏳ กำลังอัปโหลด...';
+    updateSyncDots('syncing');
+    try {
+      await fetchFromSheet('saveApps',   { data: state.apps });
+      const schoolArr = Object.entries(state.school).map(([key,value]) => ({key,value}));
+      await fetchFromSheet('saveSchool', { data: schoolArr });
+      // ส่งเฉพาะ passwordHash ไม่ส่ง plaintext
+      const adminArr  = [{ username: state.admin.username, passwordHash: state.admin.passwordHash || '', lastLogin: '' }];
+      await fetchFromSheet('saveAdmin',  { data: adminArr });
+      lastSyncTime = Date.now();
+      setText('last-sync-label', new Date(lastSyncTime).toLocaleTimeString('th-TH'));
+      updateSyncDots('ok');
+      showToast('✅ อัปโหลดข้อมูลขึ้น Sheets สำเร็จ','success');
+    } catch(err) {
+      updateSyncDots('err');
+      showToast('❌ ' + err.message,'error');
+    }
+    btn.disabled    = false;
+    btn.textContent = 'Push';
+  });
+}
+
+// ── Init Sheets Structure (first-time setup) ──
+async function initSheetsStructure() {
+  if(!sheetsConfig.url) { showToast('⚠️ ยังไม่ได้ตั้งค่า URL','warn'); return; }
+  showToast('🏗️ กำลังสร้าง Sheets...','info');
+  updateSyncDots('syncing');
+  try {
+    const results = await fetchFromSheet('initSheets');
+    const created = (results||[]).filter(r=>r.created).map(r=>r.name);
+    const msg = created.length
+      ? `✅ สร้าง Sheet สำเร็จ: ${created.join(', ')}`
+      : '✅ Sheets ทั้งหมดมีอยู่แล้ว';
+    showToast(msg,'success');
+    updateSyncDots('ok');
+    checkSheetsHealth();
+  } catch(err) {
+    updateSyncDots('err');
+    showToast('❌ ' + err.message,'error');
+  }
+}
+
+// ── Check Health ──
+async function checkSheetsHealth() {
+  if(!sheetsConfig.url) { showToast('⚠️ ยังไม่ได้ตั้งค่า URL','warn'); return; }
+  showToast('🔍 กำลังตรวจสอบ...','info');
+  try {
+    const list = await fetchFromSheet('checkHealth');
+    renderHealthList(list);
+    showToast('✅ ตรวจสอบเสร็จสิ้น','success');
+  } catch(err) {
+    showToast('❌ ' + err.message,'error');
+    renderHealthList([]);
+  }
+}
+
+function renderHealthList(list) {
+  const el = document.getElementById('sheets-health-list');
+  if(!el) return;
+  const sheets = ['Apps','School','Admin','Announcements','AuditLog','Config'];
+  if(!list || !list.length) {
+    el.innerHTML = sheets.map(name => `
+      <div class="glass-med rounded-xl px-3 py-2.5 flex items-center gap-3">
+        <span class="text-base">📄</span>
+        <span class="text-sm text-white/70 flex-1">${name}</span>
+        <span class="text-xs text-white/30">ยังไม่ได้ตรวจสอบ</span>
+      </div>`).join('');
+    return;
+  }
+  el.innerHTML = list.map(s => `
+    <div class="glass-med rounded-xl px-3 py-2.5 flex items-center gap-3">
+      <span class="text-base">${s.exists ? '✅' : '❌'}</span>
+      <span class="text-sm text-white/80 flex-1 font-medium">${s.name}</span>
+      <span class="text-xs ${s.exists ? 'text-white/50' : 'text-red-400'}">${s.exists ? s.rows+' rows' : 'ไม่พบ sheet'}</span>
+    </div>`).join('');
+}
+
+// ── Sync Dot Helpers ──
+function updateSyncDots(status) {
+  syncStatus = status;
+  ['sync-dot-sb','sync-dot-m','sheets-status-dot'].forEach(id => {
+    const el = document.getElementById(id);
+    if(!el) return;
+    el.className = `sync-dot ${status}`;
+    if(id.includes('status')) el.className += ' absolute -bottom-0.5 -right-0.5 border-2 border-black/40';
+    const tips = {idle:'ยังไม่ได้เชื่อมต่อ', syncing:'กำลังซิงค์...', ok:'เชื่อมต่อแล้ว', warn:'รอการทดสอบ', err:'เชื่อมต่อล้มเหลว'};
+    el.title = tips[status] || status;
+  });
+}
+
+function updateSheetsStatusCard(status, latency) {
+  const titleEl  = document.getElementById('sheets-status-title');
+  const subEl    = document.getElementById('sheets-status-sub');
+  const badgeEl  = document.getElementById('sheets-status-badge');
+  const iconEl   = document.getElementById('sheets-status-icon');
+  if(!titleEl) return;
+  if(status === 'ok') {
+    iconEl.textContent  = '✅';
+    titleEl.textContent = 'เชื่อมต่อ Google Sheets แล้ว';
+    subEl.textContent   = `Latency: ${latency}ms — พร้อมซิงค์ข้อมูล`;
+    badgeEl.textContent = 'ออนไลน์';
+    badgeEl.className   = 'text-xs px-3 py-1 rounded-full bg-green-500/20 text-green-400 font-semibold flex-shrink-0';
+  } else if(status === 'err') {
+    iconEl.textContent  = '❌';
+    titleEl.textContent = 'เชื่อมต่อไม่สำเร็จ';
+    subEl.textContent   = 'ตรวจสอบ URL, API Key และ Deploy อีกครั้ง';
+    badgeEl.textContent = 'Error';
+    badgeEl.className   = 'text-xs px-3 py-1 rounded-full bg-red-500/20 text-red-400 font-semibold flex-shrink-0';
+  } else {
+    iconEl.textContent  = '☁️';
+    titleEl.textContent = sheetsConfig.url ? 'ตั้งค่าแล้ว รอทดสอบ' : 'ยังไม่ได้เชื่อมต่อ';
+    subEl.textContent   = 'กรอก Web App URL และ API Key แล้วกดทดสอบ';
+    badgeEl.textContent = 'ออฟไลน์';
+    badgeEl.className   = 'text-xs px-3 py-1 rounded-full bg-white/10 text-white/50 font-semibold flex-shrink-0';
+  }
+}
+
+// ── Copy GAS Code ──
+function copyGasCode() {
+  navigator.clipboard.writeText(GAS_CODE).then(() => {
+    showToast('✅ คัดลอก Code.gs แล้ว — ไปวางใน Apps Script','success');
+  }).catch(() => {
+    const ta = document.createElement('textarea');
+    ta.value = GAS_CODE;
+    document.body.appendChild(ta);
+    ta.select();
+    document.execCommand('copy');
+    ta.remove();
+    showToast('✅ คัดลอก Code.gs แล้ว','success');
+  });
+}
+
+function openGasConsole() {
+  window.open('https://script.google.com', '_blank');
+}
+
+// ── Export / Import ──
+function exportJSON() {
+  const data = { apps: state.apps, school: state.school, exportedAt: new Date().toISOString(), version: 2 };
+  const blob = new Blob([JSON.stringify(data, null, 2)], { type:'application/json' });
+  const url  = URL.createObjectURL(blob);
+  const a    = document.createElement('a');
+  a.href = url;
+  a.download = `portal-backup-${new Date().toISOString().slice(0,10)}.json`;
+  a.click();
+  URL.revokeObjectURL(url);
+  showToast('📥 Export JSON เสร็จแล้ว','success');
+}
+
+function importJSON(input) {
+  const file = input.files[0];
+  if(!file) return;
+  const reader = new FileReader();
+  reader.onload = e => {
+    try {
+      const data = JSON.parse(e.target.result);
+      if(!data.apps || !Array.isArray(data.apps)) throw new Error('ไฟล์ไม่ถูกต้อง (ต้องมี apps array)');
+      requirePassword(() => {
+        if(data.apps)   state.apps   = data.apps;
+        if(data.school) state.school = data.school;
+        saveState();
+        renderApps();
+        renderSchoolInfo();
+        renderAdminAppList();
+        showToast(`✅ Import สำเร็จ — ${data.apps.length} แอป`,'success');
+      });
+    } catch(err) {
+      showToast('❌ ไฟล์ไม่ถูกต้อง: '+err.message,'error');
+    }
+    input.value = '';
+  };
+  reader.readAsText(file);
+}
+
+// ═══════════════════════════════════════
+// AUTO-SYNC: ดึงข้อมูลจาก Sheets เมื่อโหลดหน้า
+// เพื่อให้ทุกคน (ไม่ใช่แค่ Admin) เห็น Logo และข้อมูลล่าสุด
+// ═══════════════════════════════════════
+async function autoSyncFromSheets() {
+  if(!sheetsConfig.url) return; // ยังไม่ได้ตั้งค่า Sheets → ใช้ localStorage ปกติ
+  const CACHE_MS = (sheetsConfig.cacheMinutes || 5) * 60 * 1000;
+  const now = Date.now();
+  // ไม่ดึงซ้ำถ้า sync ล่าสุดยังไม่เกิน cache time
+  if(lastSyncTime && (now - lastSyncTime) < CACHE_MS) return;
+  try {
+    updateSyncDots('syncing');
+    const data = await fetchFromSheet('getAll', {}, 8000);
+    let changed = false;
+    if(data.apps && data.apps.length) {
+      state.apps = data.apps;
+      changed = true;
+    }
+    if(data.school && Object.keys(data.school).length) {
+      state.school = {
+        name:    data.school.name    || state.school.name,
+        sub:     data.school.sub     || state.school.sub,
+        emoji:   data.school.emoji   || state.school.emoji,
+        logoUrl: data.school.logoUrl !== undefined ? data.school.logoUrl : state.school.logoUrl,
+      };
+      changed = true;
+    }
+    if(data.admin && data.admin.length) {
+      state.admin = {
+        username:     data.admin[0].username     || state.admin.username,
+        passwordHash: data.admin[0].passwordHash || state.admin.passwordHash || '',
+        password:     '', // ลบ plaintext เสมอหลัง sync
+      };
+    }
+    if(changed) {
+      saveState();
+      renderSchoolInfo();
+      renderApps();
+    }
+    lastSyncTime = now;
+    setText('last-sync-label', new Date(now).toLocaleTimeString('th-TH'));
+    updateSyncDots('ok');
+  } catch(err) {
+    // Auto-sync ล้มเหลว → ใช้ข้อมูลจาก localStorage ต่อไป ไม่ต้องแจ้ง error
+    updateSyncDots(sheetsConfig.url ? 'warn' : 'idle');
+  }
+}
+
+// ═══════════════════════════════════════
+// INIT
+// ═══════════════════════════════════════
+async function init() {
+  // โหลด Sheets config ก่อน เพราะ loadState() ต้องใช้ sheetsConfig.cacheMinutes
+  loadSheetsConfig();
+  await loadState();
+
+  // ── Migrate legacy plaintext password → SHA-256 hash ──
+  if (state.admin.password && !state.admin.passwordHash) {
+    try {
+      const h = await hashPassword(state.admin.password);
+      state.admin.passwordHash = h;
+      state.admin.password     = ''; // ลบ plaintext
+      saveState();
+    } catch(_) {}
+  }
+
+  updateClock();
+  setInterval(updateClock, 1000);
+  renderSchoolInfo();
+  renderApps();
+  updateAdminUI();
+  // autoSyncFromSheets ถูกเรียกจาก loadState แล้ว (ถ้าตั้งค่า Sheets)
+}
+
+init();
+</script>
+</body>
+</html>
