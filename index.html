@@ -112,10 +112,6 @@
   @keyframes pulse{0%,100%{opacity:1}50%{opacity:.35}}
   .sync-dot.syncing{background:#60a5fa;animation:pulse .9s ease-in-out infinite;}
 
-  /* Sheet config tab ping animation */
-  @keyframes pingOnce{0%{transform:scale(1);opacity:.8}80%{transform:scale(2.2);opacity:0}100%{transform:scale(1);opacity:0}}
-  .ping-once{animation:pingOnce .6s ease-out forwards;}
-
   /* Connection test result box */
   .conn-result{border-radius:14px;padding:12px 16px;font-size:13px;line-height:1.55;transition:opacity .3s;}
 
@@ -123,7 +119,7 @@
   .lat-bar{height:4px;border-radius:2px;background:rgba(255,255,255,.12);overflow:hidden;margin-top:6px;}
   .lat-fill{height:100%;border-radius:2px;transition:width .6s cubic-bezier(.34,1.3,.64,1);}
 
-  /* [SECURITY FIX #4] Input validation error hints */
+  /* Input validation error hints */
   .error-hint{color:#f87171;font-size:0.75rem;margin-top:4px;padding-left:4px;}
 </style>
 </head>
@@ -223,7 +219,6 @@
 
     <!-- App Grid Scroll Area -->
     <div class="flex-1 overflow-y-auto scroll-hide scroll-thin pb-2 lg:pb-6">
-      <!-- Section: ระบบหลัก -->
       <div class="px-4 lg:px-6">
         <div class="text-white/40 text-xs font-semibold uppercase tracking-widest mb-3 mt-1 lg:mt-0">ระบบหลัก</div>
         <div id="appGrid" class="grid grid-cols-4 sm:grid-cols-5 md:grid-cols-6 lg:grid-cols-5 xl:grid-cols-6 2xl:grid-cols-7 gap-x-3 gap-y-5"></div>
@@ -317,10 +312,10 @@
 
     <!-- Tabs -->
     <div class="flex border-b border-white/10 px-5 flex-shrink-0 overflow-x-auto scroll-hide">
-      <button onclick="switchTab('apps')" id="tab-apps" class="tab-btn active px-4 py-3 text-sm font-semibold text-white/60 whitespace-nowrap">🗂️ จัดการแอป</button>
-      <button onclick="switchTab('school')" id="tab-school" class="tab-btn px-4 py-3 text-sm font-semibold text-white/60 whitespace-nowrap">🏫 ข้อมูลโรงเรียน</button>
+      <button onclick="switchTab('apps')"     id="tab-apps"     class="tab-btn active px-4 py-3 text-sm font-semibold text-white/60 whitespace-nowrap">🗂️ จัดการแอป</button>
+      <button onclick="switchTab('school')"   id="tab-school"   class="tab-btn px-4 py-3 text-sm font-semibold text-white/60 whitespace-nowrap">🏫 ข้อมูลโรงเรียน</button>
       <button onclick="switchTab('password')" id="tab-password" class="tab-btn px-4 py-3 text-sm font-semibold text-white/60 whitespace-nowrap">🔑 รหัสผ่าน</button>
-      <button onclick="switchTab('sheets')" id="tab-sheets" class="tab-btn px-4 py-3 text-sm font-semibold text-white/60 whitespace-nowrap">☁️ Google Sheets</button>
+      <button onclick="switchTab('sheets')"   id="tab-sheets"   class="tab-btn px-4 py-3 text-sm font-semibold text-white/60 whitespace-nowrap">☁️ Google Sheets</button>
     </div>
 
     <!-- Panel Content -->
@@ -328,7 +323,6 @@
 
       <!-- ─── TAB: APPS ─── -->
       <div id="panel-apps" class="p-5 max-w-3xl mx-auto">
-        <!-- App List -->
         <div class="flex items-center justify-between mb-4">
           <div class="text-white/60 text-sm font-semibold">รายการระบบทั้งหมด</div>
           <button onclick="openAppEditor(null)" class="bg-blue-500 hover:bg-blue-400 transition rounded-xl px-4 py-2 text-sm font-bold flex items-center gap-1.5">
@@ -426,28 +420,20 @@
             </div>
             <div class="flex-1 min-w-0">
               <div id="sheets-status-title" class="font-bold text-sm">ยังไม่ได้เชื่อมต่อ</div>
-              <div id="sheets-status-sub" class="text-white/50 text-xs mt-0.5">กรอก Web App URL และ API Key แล้วกดทดสอบ</div>
+              <div id="sheets-status-sub" class="text-white/50 text-xs mt-0.5">กรอก Web App URL แล้วกดทดสอบ</div>
             </div>
             <div id="sheets-status-badge" class="text-xs px-3 py-1 rounded-full bg-white/10 text-white/50 font-semibold flex-shrink-0">ออฟไลน์</div>
           </div>
 
-          <!-- Section: Credentials -->
+          <!-- Section: URL Only (ไม่มี API Key) -->
           <div>
-            <div class="text-white/40 text-xs font-semibold uppercase tracking-widest mb-3">🔐 ข้อมูลการเชื่อมต่อ</div>
+            <div class="text-white/40 text-xs font-semibold uppercase tracking-widest mb-3">🔗 ข้อมูลการเชื่อมต่อ</div>
             <div class="space-y-3">
               <div>
                 <label class="text-white/60 text-xs font-semibold uppercase tracking-wide block mb-1.5">Web App URL (Google Apps Script)</label>
                 <input id="gs-url" type="url" class="inp" placeholder="https://script.google.com/macros/s/AKfy.../exec"
                   oninput="sheetsCfgDirty()">
                 <div class="text-white/30 text-xs mt-1 px-1">ได้จาก Apps Script → Deploy → Manage deployments → Web App URL</div>
-              </div>
-              <div>
-                <label class="text-white/60 text-xs font-semibold uppercase tracking-wide block mb-1.5">API Key (Script Properties)</label>
-                <div class="relative">
-                  <input id="gs-key" type="password" class="inp pr-10" placeholder="ตั้งค่าใน Script Properties: PORTAL_API_KEY"
-                    oninput="sheetsCfgDirty()">
-                  <button type="button" onclick="togglePw('gs-key',this)" class="absolute right-3 top-1/2 -translate-y-1/2 text-white/40 hover:text-white/80 transition text-sm">👁️</button>
-                </div>
               </div>
               <div class="grid grid-cols-2 gap-3">
                 <div>
@@ -517,38 +503,31 @@
           <!-- Section: Sheets Structure -->
           <div>
             <div class="text-white/40 text-xs font-semibold uppercase tracking-widest mb-3">📋 โครงสร้าง Google Sheets</div>
-            <div class="space-y-2" id="sheets-health-list">
-              <!-- rendered by JS -->
-            </div>
+            <div class="space-y-2" id="sheets-health-list"></div>
             <button onclick="checkSheetsHealth()" class="mt-3 w-full glass-med hover:bg-white/10 transition rounded-xl py-2.5 font-semibold text-sm text-white/70">
               🔍 ตรวจสอบ Sheets ทั้งหมด
             </button>
           </div>
 
-          <!-- Section: Apps Script Code -->
+          <!-- Section: Apps Script Setup Guide -->
           <div>
-            <div class="text-white/40 text-xs font-semibold uppercase tracking-widest mb-3">📄 Google Apps Script</div>
+            <div class="text-white/40 text-xs font-semibold uppercase tracking-widest mb-3">📄 ขั้นตอนการเชื่อมต่อ</div>
             <div class="glass-med rounded-2xl p-4 space-y-3">
-              <div class="text-white/70 text-sm leading-relaxed">คัดลอก Code ด้านล่างไปวางใน Google Apps Script แล้ว Deploy เป็น Web App</div>
               <div class="flex gap-2">
-                <button onclick="copyGasCode()" class="flex-1 bg-green-500/80 hover:bg-green-500 transition rounded-xl py-2.5 font-bold text-sm">
-                  📋 คัดลอก Code.gs
-                </button>
                 <button onclick="openGasConsole()" class="flex-1 glass hover:bg-white/15 transition rounded-xl py-2.5 font-semibold text-sm">
                   🚀 เปิด Apps Script
                 </button>
+                <button onclick="initSheetsStructure()" class="flex-1 bg-indigo-500/80 hover:bg-indigo-500 transition rounded-xl py-2.5 font-bold text-sm">
+                  🏗️ สร้าง Sheets (ครั้งแรก)
+                </button>
               </div>
-              <button onclick="initSheetsStructure()" class="w-full bg-indigo-500/80 hover:bg-indigo-500 transition rounded-xl py-2.5 font-bold text-sm">
-                🏗️ สร้าง Sheets อัตโนมัติ (ครั้งแรก)
-              </button>
               <div class="space-y-1.5">
                 <div class="text-white/40 text-xs font-semibold">ขั้นตอนการ Deploy:</div>
                 <div class="text-white/55 text-xs leading-relaxed space-y-1">
                   <div>1. เปิด script.google.com → สร้างโปรเจกต์ใหม่</div>
-                  <div>2. วาง Code.gs → บันทึก</div>
-                  <div>3. Project Settings → Script Properties → เพิ่ม <code class="bg-white/10 px-1 rounded text-white/80">PORTAL_API_KEY</code></div>
-                  <div>4. Deploy → New deployment → Web App → Execute as: Me → Access: Anyone</div>
-                  <div>5. คัดลอก URL มาวางในช่องด้านบน</div>
+                  <div>2. วาง Code.gs → ใส่ Spreadsheet ID ในตัวแปร SS_ID → บันทึก</div>
+                  <div>3. Deploy → New deployment → Web App → Execute as: Me → Access: Anyone</div>
+                  <div>4. คัดลอก URL มาวางในช่องด้านบน → บันทึก → ทดสอบการเชื่อมต่อ</div>
                 </div>
               </div>
             </div>
@@ -685,9 +664,7 @@
 </div>
 
 
-<!-- ══════════════════════════════════════
-     TOAST
-══════════════════════════════════════ -->
+<!-- TOAST -->
 <div id="toastContainer" class="fixed bottom-24 lg:bottom-6 left-1/2 -translate-x-1/2 z-[100] flex flex-col items-center gap-2 pointer-events-none"></div>
 
 
@@ -713,16 +690,6 @@ const COLORS = {
   rose:   'linear-gradient(145deg,#fb7185,#e11d48)',
 };
 
-// ═══════════════════════════════════════
-// SHEET_CONFIG — แก้ค่าตรงนี้หลัง deploy
-// ═══════════════════════════════════════
-const SHEET_CONFIG = {
-  webAppUrl:    '',   // ← Web App URL จาก Apps Script deploy
-  apiKey:       '',   // ← API Key ที่ตั้งใน PropertiesService: PORTAL_API_KEY
-  cacheMinutes: 5,    // TTL ของ memory/local cache (นาที)
-  retryCount:   3,    // จำนวน retry ถ้า fetch fail
-};
-
 const DEFAULT_APPS = [
   {id:'conduct', name:'คะแนนความประพฤติ', icon:'🏅', color:'green',  url:'#', badge:3, enabled:true,  inDock:true,  sub:'Behavior Score System v5.0',    desc:'ระบบบันทึกและจัดการคะแนนความประพฤตินักเรียน รองรับการให้/ตัดคะแนน แยกตามชั้นเรียน พร้อมรายงานสรุป'},
   {id:'homeroom', name:'เช็คโฮมรูม',       icon:'🏠', color:'blue',   url:'#', badge:0, enabled:true,  inDock:true,  sub:'Homeroom Check-in v8.0',         desc:'ระบบเช็คชื่อนักเรียนในชั่วโมงโฮมรูม รองรับการบันทึก มา/สาย/ลา/ขาด พร้อมแจ้งเตือน Telegram'},
@@ -735,9 +702,8 @@ const DEFAULT_APPS = [
   {id:'teacher',  name:'ข้อมูลครู',         icon:'👩‍🏫',color:'pink',   url:'#', badge:0, enabled:true,  inDock:false, sub:'Teacher Database',              desc:'ฐานข้อมูลครูและบุคลากร จัดการสิทธิ์การเข้าถึงระบบต่างๆ'},
   {id:'schedule', name:'ตารางสอน',          icon:'📅', color:'yellow', url:'#', badge:0, enabled:true,  inDock:false, sub:'Class Schedule',                 desc:'ตารางสอนรายครู รายชั้น ประจำภาคเรียน'},
 ];
-const DEFAULT_SCHOOL  = {name:'โรงเรียนปรางค์กู่', sub:'สพม.ศรีสะเกษ ยโสธร', emoji:'🏫', logoUrl:'https://img1.pic.in.th/images/LOGO--.png'};
-// password เก็บเป็น SHA-256 hex (passwordHash) หรือ plaintext legacy (password)
-const DEFAULT_ADMIN   = {username:'admin', passwordHash:'', password:'prangku2567'};
+const DEFAULT_SCHOOL = {name:'โรงเรียนปรางค์กู่', sub:'สพม.ศรีสะเกษ ยโสธร', emoji:'🏫', logoUrl:'https://img1.pic.in.th/images/LOGO--.png'};
+const DEFAULT_ADMIN  = {username:'admin', passwordHash:'', password:'prangku2567'};
 
 // ═══════════════════════════════════════
 // STATE
@@ -753,8 +719,7 @@ let state = {
 };
 
 // ═══════════════════════════════════════
-// [SECURITY FIX #1] XSS PREVENTION — sanitize()
-// Escapes all dangerous HTML entities before inserting into innerHTML
+// XSS PREVENTION — sanitize()
 // ═══════════════════════════════════════
 function sanitize(str) {
   if (str === null || str === undefined) return '';
@@ -768,8 +733,7 @@ function sanitize(str) {
 }
 
 // ═══════════════════════════════════════
-// [SECURITY FIX #3] ADMIN SESSION EXPIRY — isSessionValid()
-// Session expires after 30 minutes of inactivity
+// ADMIN SESSION EXPIRY
 // ═══════════════════════════════════════
 const SESSION_TIMEOUT_MS = 30 * 60 * 1000; // 30 minutes
 
@@ -781,7 +745,6 @@ function isSessionValid() {
 
 function requireValidSession() {
   if (!state.isAdmin || !isSessionValid()) {
-    // Auto-logout
     state.isAdmin = false;
     sessionStorage.removeItem('portal_admin_session');
     sessionStorage.removeItem('portal_admin_ts');
@@ -799,46 +762,34 @@ function requireValidSession() {
 // SHA-256 — Web Crypto API
 // ═══════════════════════════════════════
 async function hashPassword(pw) {
-  const enc  = new TextEncoder();
-  const buf  = await crypto.subtle.digest('SHA-256', enc.encode(pw));
+  const enc = new TextEncoder();
+  const buf = await crypto.subtle.digest('SHA-256', enc.encode(pw));
   return Array.from(new Uint8Array(buf)).map(b => b.toString(16).padStart(2,'0')).join('');
 }
 
-/** เปรียบเทียบ password กับที่เก็บ (รองรับทั้ง hash และ plaintext legacy) */
 async function verifyPassword(inputPw) {
   const ad = state.admin;
-  // ถ้ามี passwordHash → ใช้ SHA-256 compare
   if (ad.passwordHash) {
     const h = await hashPassword(inputPw);
     return h === ad.passwordHash;
   }
-  // legacy plaintext fallback
   return inputPw === (ad.password || '');
 }
 
 // ═══════════════════════════════════════
-// STORAGE — localStorage + Sheets API Layer
+// STORAGE — localStorage + Sheets sync
 // ═══════════════════════════════════════
+let _memCache  = null;
+let _saveTimer = null;
 
-// Memory cache (ป้องกัน re-fetch ก่อนหมด TTL)
-let _memCache     = null;   // { data, ts }
-let _saveQueue    = [];     // retry queue สำหรับ Sheets
-let _saveTimer    = null;
-
-/** บันทึก state ลง localStorage ทันที (optimistic) แล้ว async push ขึ้น Sheets */
 function saveState() {
-  // 1. localStorage ทันที
   try {
     localStorage.setItem('portal_apps',   JSON.stringify(state.apps));
     localStorage.setItem('portal_school', JSON.stringify(state.school));
     localStorage.setItem('portal_admin',  JSON.stringify(state.admin));
     localStorage.setItem('portal_cache_ts', String(Date.now()));
   } catch(e){}
-
-  // 2. อัปเดต memory cache
   _memCache = { data: snapshot(), ts: Date.now() };
-
-  // 3. async push ขึ้น Sheets (ถ้าตั้งค่าแล้ว)
   if (sheetsConfig.url) {
     clearTimeout(_saveTimer);
     _saveTimer = setTimeout(() => _pushToSheetsBackground(), 200);
@@ -848,7 +799,7 @@ function saveState() {
 async function _pushToSheetsBackground() {
   try {
     updateSyncDots('syncing');
-    await fetchFromSheet('saveApps',   { data: state.apps });
+    await fetchFromSheet('saveApps', { data: state.apps });
     const schoolArr = Object.entries(state.school).map(([key,value]) => ({key,value}));
     await fetchFromSheet('saveSchool', { data: schoolArr });
     lastSyncTime = Date.now();
@@ -860,11 +811,8 @@ async function _pushToSheetsBackground() {
   }
 }
 
-/** โหลด state: memory cache → localStorage → Sheets */
 async function loadState() {
   const CACHE_MS = (sheetsConfig.cacheMinutes || 5) * 60 * 1000;
-
-  // อ่าน localStorage ก่อน (เร็ว)
   try {
     const a  = localStorage.getItem('portal_apps');
     const s  = localStorage.getItem('portal_school');
@@ -874,22 +822,13 @@ async function loadState() {
     state.school = s  ? JSON.parse(s)  : {...DEFAULT_SCHOOL};
     state.admin  = ad ? JSON.parse(ad) : {...DEFAULT_ADMIN};
     state.isAdmin = sessionStorage.getItem('portal_admin_session') === '1';
-
-    // ตั้ง memory cache จาก localStorage
     if (ts) _memCache = { data: snapshot(), ts };
   } catch(e) {
     state.apps   = [...DEFAULT_APPS];
     state.school = {...DEFAULT_SCHOOL};
     state.admin  = {...DEFAULT_ADMIN};
   }
-
-  // ถ้า memory cache ยังไม่หมด TTL → ใช้เลย ไม่ต้อง fetch
-  if (_memCache && (Date.now() - _memCache.ts) < CACHE_MS) return;
-
-  // ถ้าตั้งค่า Sheets แล้ว → fetch ข้อมูลใหม่ async (ไม่ block UI)
-  if (sheetsConfig.url) {
-    autoSyncFromSheets();
-  }
+  // ไม่ auto-sync ใน loadState — init() จะเรียก autoSyncFromSheets() เสมอ
 }
 
 function snapshot() {
@@ -897,23 +836,13 @@ function snapshot() {
 }
 
 // ═══════════════════════════════════════
-// API LAYER — fetchFromSheet (core)
+// API LAYER — fetchFromSheet (ไม่มี apiKey)
 // ═══════════════════════════════════════
-
-/**
- * Core fetch สำหรับเรียก Apps Script
- * - GET action: ส่งผ่าน query params
- * - POST action (payload.data): ส่งผ่าน body JSON
- * - retry logic พร้อม exponential backoff
- * - fallback localStorage cache ถ้า network fail
- */
 async function fetchFromSheet(action, payload = {}, timeoutMs = 12000) {
   if (!sheetsConfig.url) throw new Error('ยังไม่ได้ตั้งค่า Web App URL');
-
   const isPost = payload.data !== undefined;
   const maxRetry = sheetsConfig.retryCount || 3;
   let lastErr;
-
   for (let attempt = 1; attempt <= maxRetry; attempt++) {
     try {
       const result = isPost
@@ -922,19 +851,14 @@ async function fetchFromSheet(action, payload = {}, timeoutMs = 12000) {
       return result;
     } catch(err) {
       lastErr = err;
-      if (attempt < maxRetry) {
-        // exponential backoff: 500ms, 1000ms, 2000ms …
-        await _sleep(500 * Math.pow(2, attempt - 1));
-      }
+      if (attempt < maxRetry) await _sleep(500 * Math.pow(2, attempt - 1));
     }
   }
-
-  // ทุก retry ล้มเหลว → throw เพื่อให้ caller fallback
   throw lastErr;
 }
 
 async function _doGet(action, params = {}, timeoutMs = 12000) {
-  const qs  = new URLSearchParams({ apiKey: sheetsConfig.apiKey, action, ...params }).toString();
+  const qs  = new URLSearchParams({ action, ...params }).toString();
   const url = sheetsConfig.url + '?' + qs;
   const ctrl = new AbortController();
   const tid  = setTimeout(() => ctrl.abort(), timeoutMs);
@@ -948,7 +872,7 @@ async function _doGet(action, params = {}, timeoutMs = 12000) {
 }
 
 async function _doPost(action, payload = {}, timeoutMs = 15000) {
-  const body = JSON.stringify({ apiKey: sheetsConfig.apiKey, action, ...payload });
+  const body = JSON.stringify({ action, ...payload });
   const ctrl = new AbortController();
   const tid  = setTimeout(() => ctrl.abort(), timeoutMs);
   try {
@@ -964,37 +888,23 @@ async function _doPost(action, payload = {}, timeoutMs = 15000) {
   } catch(e) { clearTimeout(tid); throw e; }
 }
 
-// keep legacy aliases for compatibility
-async function gasCall(action, data={}, timeoutMs=12000) {
-  return _doGet(action, data, timeoutMs);
-}
-async function gasPost(action, payload={}) {
-  return _doPost(action, { data: payload });
-}
-
 function _sleep(ms) { return new Promise(r => setTimeout(r, ms)); }
 
 // ═══════════════════════════════════════
 // CLOCK
 // ═══════════════════════════════════════
-const DAYS = ['อาทิตย์','จันทร์','อังคาร','พุธ','พฤหัสบดี','ศุกร์','เสาร์'];
+const DAYS   = ['อาทิตย์','จันทร์','อังคาร','พุธ','พฤหัสบดี','ศุกร์','เสาร์'];
 const MONTHS = ['มกราคม','กุมภาพันธ์','มีนาคม','เมษายน','พฤษภาคม','มิถุนายน','กรกฎาคม','สิงหาคม','กันยายน','ตุลาคม','พฤศจิกายน','ธันวาคม'];
 
 function updateClock() {
   const now = new Date();
-  const hh = String(now.getHours()).padStart(2,'0');
-  const mm = String(now.getMinutes()).padStart(2,'0');
-  const time = `${hh}:${mm}`;
+  const hh  = String(now.getHours()).padStart(2,'0');
+  const mm  = String(now.getMinutes()).padStart(2,'0');
+  const time    = `${hh}:${mm}`;
   const dayName = `วัน${DAYS[now.getDay()]}`;
   const dateStr = `${now.getDate()} ${MONTHS[now.getMonth()]} ${now.getFullYear()+543}`;
-
-  setText('sb-time', time);
-  setText('sb-dayname', dayName);
-  setText('sb-date', dateStr);
-  setText('m-time', time);
-  setText('m-bigtime', time);
-  setText('m-dayname', dayName);
-  setText('m-date', dateStr);
+  setText('sb-time', time); setText('sb-dayname', dayName); setText('sb-date', dateStr);
+  setText('m-time', time);  setText('m-bigtime', time); setText('m-dayname', dayName); setText('m-date', dateStr);
 }
 function setText(id, val) { const el = document.getElementById(id); if(el) el.textContent = val; }
 
@@ -1005,18 +915,15 @@ function renderSchoolInfo() {
   const {name, sub, emoji, logoUrl} = state.school;
   ['sb-school-name','m-school-name'].forEach(id => setText(id, name));
   ['sb-school-sub'].forEach(id => setText(id, sub));
-
   const sbEl = document.getElementById('sb-school-emoji');
   if(sbEl) sbEl.innerHTML = logoURL_or_emoji_html(logoUrl, emoji, 'w-10 h-10', 'text-2xl');
-
   const mEl = document.getElementById('m-school-emoji');
-  if(mEl) mEl.innerHTML = logoURL_or_emoji_html(logoUrl, emoji, 'w-5 h-5', 'text-base');
+  if(mEl)  mEl.innerHTML  = logoURL_or_emoji_html(logoUrl, emoji, 'w-5 h-5', 'text-base');
 }
 
-// [SECURITY FIX #1] sanitize() applied to logoUrl, emoji, imgClass, emojiClass before injecting into innerHTML
 function logoURL_or_emoji_html(logoUrl, emoji, imgClass, emojiClass) {
-  const safeEmoji    = sanitize(emoji || '🏫');
-  const safeImgClass = sanitize(imgClass);
+  const safeEmoji      = sanitize(emoji || '🏫');
+  const safeImgClass   = sanitize(imgClass);
   const safeEmojiClass = sanitize(emojiClass);
   if(logoUrl) {
     const safeUrl = sanitize(logoUrl);
@@ -1029,8 +936,6 @@ function renderApps(filter='') {
   const grid = document.getElementById('appGrid');
   if(!grid) return;
   const visible = state.apps.filter(a => a.enabled && (!filter || a.name.toLowerCase().includes(filter.toLowerCase())));
-
-  // [SECURITY FIX #1] All user-data fields are wrapped with sanitize() to prevent XSS
   grid.innerHTML = visible.map((app, i) => `
     <div class="app-item flex flex-col items-center gap-2 anim-pop d${Math.min(i+1,12)}" onclick="openAppDetail('${sanitize(app.id)}')">
       <div class="icon-wrap icon-box flex items-center justify-center shadow-lg" style="background:${COLORS[sanitize(app.color)]||COLORS.blue}">
@@ -1040,7 +945,6 @@ function renderApps(filter='') {
       <div class="text-white text-[11px] sm:text-xs font-medium text-center leading-tight max-w-[72px] line-clamp-2" style="text-shadow:0 1px 4px rgba(0,0,0,.6)">${sanitize(app.name)}</div>
     </div>
   `).join('');
-
   renderDock();
   renderSidebarNav();
 }
@@ -1049,7 +953,6 @@ function renderDock() {
   const dock = document.getElementById('dockGrid');
   if(!dock) return;
   const dockApps = state.apps.filter(a => a.enabled && a.inDock).slice(0, 5);
-  // [SECURITY FIX #1] sanitize() applied to all user-controlled fields
   dock.innerHTML = dockApps.map(app => `
     <div class="app-item flex flex-col items-center gap-1" onclick="openAppDetail('${sanitize(app.id)}')">
       <div class="icon-wrap w-14 h-14 rounded-[14px] flex items-center justify-center text-2xl shadow-md" style="background:${COLORS[sanitize(app.color)]||COLORS.blue}">
@@ -1063,7 +966,6 @@ function renderSidebarNav() {
   const nav = document.getElementById('sidebarNav');
   if(!nav) return;
   const apps = state.apps.filter(a => a.enabled).slice(0, 8);
-  // [SECURITY FIX #1] sanitize() applied to all user-controlled fields
   nav.innerHTML = apps.map(app => `
     <div class="sidebar-app flex items-center gap-3 px-2 py-2 cursor-pointer" onclick="openAppDetail('${sanitize(app.id)}')">
       <div class="icon-wrap w-9 h-9 rounded-xl flex items-center justify-center text-lg shadow flex-shrink-0" style="background:${COLORS[sanitize(app.color)]||COLORS.blue}">
@@ -1119,14 +1021,12 @@ async function doLogin() {
   const u = document.getElementById('loginUser').value.trim();
   const p = document.getElementById('loginPass').value;
   const errEl = document.getElementById('loginError');
-
   const usernameOk = (u === state.admin.username);
   const passwordOk = await verifyPassword(p);
-
   if(usernameOk && passwordOk) {
     state.isAdmin = true;
     sessionStorage.setItem('portal_admin_session','1');
-    sessionStorage.setItem('portal_admin_ts', String(Date.now())); // [SECURITY FIX #3] record login timestamp
+    sessionStorage.setItem('portal_admin_ts', String(Date.now()));
     errEl.classList.add('hidden');
     document.getElementById('loginUser').value = '';
     document.getElementById('loginPass').value = '';
@@ -1163,16 +1063,14 @@ function updateAdminUI() {
 }
 
 function openAdminPanel() {
-  // [SECURITY FIX #3] Validate session before opening admin panel
   if (!requireValidSession()) return;
-  // Populate school fields
   document.getElementById('sc-name').value  = state.school.name;
   document.getElementById('sc-sub').value   = state.school.sub;
   document.getElementById('sc-emoji').value = state.school.emoji || '🏫';
   document.getElementById('sc-logo').value  = state.school.logoUrl || '';
   previewLogo(state.school.logoUrl || '');
-  document.getElementById('pw-user').value  = state.admin.username;
-  document.getElementById('pw-new').value   = '';
+  document.getElementById('pw-user').value    = state.admin.username;
+  document.getElementById('pw-new').value     = '';
   document.getElementById('pw-confirm').value = '';
   renderAdminAppList();
   switchTab('apps');
@@ -1224,7 +1122,6 @@ function cancelConfirmPw() {
 function renderAdminAppList() {
   const list = document.getElementById('adminAppList');
   if(!list) return;
-  // [SECURITY FIX #1] sanitize() applied to all user-controlled fields
   list.innerHTML = state.apps.map(app => `
     <div class="glass-med rounded-2xl px-4 py-3 flex items-center gap-3">
       <div class="icon-wrap w-10 h-10 rounded-xl flex items-center justify-center text-xl shadow flex-shrink-0" style="background:${COLORS[sanitize(app.color)]||COLORS.blue}">
@@ -1247,14 +1144,12 @@ function renderAdminAppList() {
 // ═══════════════════════════════════════
 function buildColorPicker(selected) {
   const picker = document.getElementById('colorPicker');
-  // [BUG FIX #2] Pass 'this' as second argument so selectColor receives the element directly
   picker.innerHTML = Object.keys(COLORS).map(c => `
     <div class="color-btn ${c===selected?'selected':''}" style="background:${COLORS[c]}" onclick="selectColor('${sanitize(c)}', this)"></div>
   `).join('');
   document.getElementById('e-color').value = selected;
 }
 
-// [BUG FIX #2] Accept el as parameter instead of relying on global event.target
 function selectColor(c, el) {
   document.getElementById('e-color').value = c;
   document.querySelectorAll('.color-btn').forEach(btn => btn.classList.remove('selected'));
@@ -1266,7 +1161,6 @@ function openAppEditor(id) {
   const isNew = !id;
   setText('editor-title', isNew ? '➕ เพิ่มระบบใหม่' : '✏️ แก้ไขระบบ');
   document.getElementById('btn-delete-app').classList.toggle('hidden', isNew);
-
   if(isNew) {
     document.getElementById('e-id').value      = '';
     document.getElementById('e-icon').value    = '🔧';
@@ -1300,49 +1194,20 @@ function openAppEditor(id) {
 }
 
 function saveAppFromEditor() {
-  // [SECURITY FIX #3] Validate session
   if (!requireValidSession()) return;
-
   const name  = document.getElementById('e-name').value.trim();
   const url   = document.getElementById('e-url').value.trim() || '#';
   const badge = document.getElementById('e-badge').value;
   const icon  = document.getElementById('e-icon').value.trim();
-
-  // [SECURITY FIX #4] Clear previous error hints
   document.querySelectorAll('.error-hint').forEach(el => el.remove());
-
   let hasError = false;
-
-  // Validate: name ≤ 50 chars and not empty
-  if (!name) {
-    showFieldError('e-name', 'กรุณากรอกชื่อระบบ');
-    hasError = true;
-  } else if (name.length > 50) {
-    showFieldError('e-name', 'ชื่อระบบต้องไม่เกิน 50 ตัวอักษร');
-    hasError = true;
-  }
-
-  // Validate: url must start with https://, http://, or be exactly '#'
-  if (url !== '#' && !/^https?:\/\//i.test(url)) {
-    showFieldError('e-url', 'URL ต้องขึ้นต้นด้วย https:// หรือ http:// หรือใช้ # สำหรับลิงก์ว่าง');
-    hasError = true;
-  }
-
-  // Validate: badge must be integer 0-99
+  if (!name) { showFieldError('e-name', 'กรุณากรอกชื่อระบบ'); hasError = true; }
+  else if (name.length > 50) { showFieldError('e-name', 'ชื่อระบบต้องไม่เกิน 50 ตัวอักษร'); hasError = true; }
+  if (url !== '#' && !/^https?:\/\//i.test(url)) { showFieldError('e-url', 'URL ต้องขึ้นต้นด้วย https:// หรือ http:// หรือใช้ # สำหรับลิงก์ว่าง'); hasError = true; }
   const badgeNum = parseInt(badge);
-  if (badge !== '' && (isNaN(badgeNum) || badgeNum < 0 || badgeNum > 99)) {
-    showFieldError('e-badge', 'Badge ต้องเป็นตัวเลข 0–99');
-    hasError = true;
-  }
-
-  // Validate: icon must be an emoji (Unicode range check)
-  if (!isEmoji(icon)) {
-    showFieldError('e-icon', 'ไอคอนต้องเป็น Emoji เท่านั้น');
-    hasError = true;
-  }
-
+  if (badge !== '' && (isNaN(badgeNum) || badgeNum < 0 || badgeNum > 99)) { showFieldError('e-badge', 'Badge ต้องเป็นตัวเลข 0–99'); hasError = true; }
+  if (!isEmoji(icon)) { showFieldError('e-icon', 'ไอคอนต้องเป็น Emoji เท่านั้น'); hasError = true; }
   if (hasError) return;
-
   requirePassword(() => {
     const isNew  = !state.editingAppId;
     const newId  = state.editingAppId || ('app_' + Date.now());
@@ -1358,9 +1223,8 @@ function saveAppFromEditor() {
       enabled: document.getElementById('e-enabled').value === 'true',
       inDock:  document.getElementById('e-dock').value === 'true',
     };
-    if(isNew) {
-      state.apps.push(appData);
-    } else {
+    if(isNew) { state.apps.push(appData); }
+    else {
       const idx = state.apps.findIndex(a => a.id === state.editingAppId);
       if(idx !== -1) state.apps[idx] = appData;
     }
@@ -1372,7 +1236,6 @@ function saveAppFromEditor() {
   });
 }
 
-// [SECURITY FIX #4] Helper: show error hint below a field
 function showFieldError(fieldId, msg) {
   const field = document.getElementById(fieldId);
   if (!field) return;
@@ -1382,16 +1245,13 @@ function showFieldError(fieldId, msg) {
   field.parentNode.insertBefore(hint, field.nextSibling);
 }
 
-// [SECURITY FIX #4] Helper: check if string is emoji using Unicode ranges
 function isEmoji(str) {
   if (!str || str.length === 0) return false;
-  // Match emoji characters via Unicode property escape
   const emojiRegex = /^(\p{Emoji_Presentation}|\p{Extended_Pictographic}|\u00a9|\u00ae|[\u2000-\u3300])/u;
   return emojiRegex.test(str.trim());
 }
 
 function deleteCurrentApp() {
-  // [SECURITY FIX #3] Validate session
   if (!requireValidSession()) return;
   requirePassword(() => {
     state.apps = state.apps.filter(a => a.id !== state.editingAppId);
@@ -1407,20 +1267,17 @@ function deleteCurrentApp() {
 // ADMIN: SCHOOL SETTINGS
 // ═══════════════════════════════════════
 function saveSchoolSettings() {
-  // [SECURITY FIX #3] Validate session
   if (!requireValidSession()) return;
   const name    = document.getElementById('sc-name').value.trim();
   const sub     = document.getElementById('sc-sub').value.trim();
   const emoji   = document.getElementById('sc-emoji').value.trim();
   const logoUrl = document.getElementById('sc-logo').value.trim();
   if(!name) { showToast('⚠️ กรุณากรอกชื่อโรงเรียน', 'warn'); return; }
-
   requirePassword(async () => {
     state.school = {name, sub, emoji: emoji || '🏫', logoUrl};
     saveState();
     renderSchoolInfo();
     previewLogo(logoUrl);
-    // ถ้าตั้งค่า Sheets แล้ว → Push ขึ้น Sheets ทันที ให้ทุกคนเห็นพร้อมกัน
     if(sheetsConfig.url) {
       try {
         updateSyncDots('syncing');
@@ -1458,25 +1315,18 @@ function previewLogo(url) {
 // ADMIN: CHANGE PASSWORD
 // ═══════════════════════════════════════
 function changePassword() {
-  // [SECURITY FIX #3] Validate session
   if (!requireValidSession()) return;
   const newUser = document.getElementById('pw-user').value.trim();
   const newPw   = document.getElementById('pw-new').value;
   const confirm = document.getElementById('pw-confirm').value;
   const matchEl = document.getElementById('pw-match-error');
-
   if(!newUser || !newPw) { showToast('⚠️ กรุณากรอกข้อมูลให้ครบ', 'warn'); return; }
-  if(newPw !== confirm) {
-    matchEl.classList.remove('hidden');
-    return;
-  }
+  if(newPw !== confirm) { matchEl.classList.remove('hidden'); return; }
   matchEl.classList.add('hidden');
-
   requirePassword(async () => {
     const h = await hashPassword(newPw);
     state.admin = { username: newUser, passwordHash: h, password: '' };
     saveState();
-    // Push ขึ้น Sheets ถ้าตั้งค่าแล้ว
     if (sheetsConfig.url) {
       try {
         await fetchFromSheet('saveAdmin', { data: [{ username: newUser, passwordHash: h, lastLogin: '' }] });
@@ -1573,158 +1423,11 @@ document.addEventListener('keydown', e => {
 // GOOGLE SHEETS SYSTEM
 // ═══════════════════════════════════════
 
-const GAS_CODE = `// ══════════════════════════════════════════════════════════════════
-// School Portal — Google Apps Script (Code.gs) v3.0
-// โรงเรียนปรางค์กู่ | สพม.ศรีสะเกษ ยโสธร
-// Deploy: Execute as Me | Access: Anyone
-// ══════════════════════════════════════════════════════════════════
-
-const SS_ID   = '';  // ← วาง Spreadsheet ID ของคุณที่นี่
-const API_KEY = PropertiesService.getScriptProperties().getProperty('PORTAL_API_KEY');
-
-function doGet(e)  { return handle(e); }
-function doPost(e) { return handle(e); }
-
-function handle(e) {
-  const out = ContentService.createTextOutput();
-  out.setMimeType(ContentService.MimeType.JSON);
-  try {
-    const p = e.parameter || {};
-    const b = (() => { try { return JSON.parse(e.postData && e.postData.contents ? e.postData.contents : '{}'); } catch(_){ return {}; } })();
-    const params = Object.assign({}, p, b);
-    if (!params.apiKey || params.apiKey !== API_KEY) {
-      out.setContent(JSON.stringify({ success: false, error: 'Unauthorized: invalid API key' }));
-      return out;
-    }
-    if (!SS_ID) {
-      out.setContent(JSON.stringify({ success: false, error: 'SS_ID not configured in Code.gs' }));
-      return out;
-    }
-    const ss = SpreadsheetApp.openById(SS_ID);
-    let result;
-    switch (params.action) {
-      case 'ping':             result = { pong: true, ts: new Date().toISOString(), version: '3.0' }; break;
-      case 'getAll':           result = getAllData(ss); break;
-      case 'saveApps':         result = saveSheet(ss, 'Apps', params.data); appendAuditLog(ss, { action:'saveApps', user:params.user||'admin', detail:(params.data||[]).length+' apps' }); break;
-      case 'saveSchool':       result = saveSheet(ss, 'School', params.data); appendAuditLog(ss, { action:'saveSchool', user:params.user||'admin', detail:'school updated' }); break;
-      case 'saveAdmin':        result = saveSheet(ss, 'Admin', params.data); appendAuditLog(ss, { action:'saveAdmin', user:params.user||'admin', detail:'credentials updated' }); break;
-      case 'saveAnnouncements':result = saveSheet(ss, 'Announcements', params.data); break;
-      case 'saveConfig':       result = saveSheet(ss, 'Config', params.data); break;
-      case 'checkHealth':      result = checkHealth(ss); break;
-      case 'initSheets':       result = initSheets(ss); break;
-      case 'auditLog':         result = appendAuditLog(ss, params.data || {}); break;
-      default: out.setContent(JSON.stringify({ success:false, error:'Unknown action: '+params.action })); return out;
-    }
-    out.setContent(JSON.stringify({ success: true, data: result }));
-  } catch (err) {
-    out.setContent(JSON.stringify({ success: false, error: err.message || String(err) }));
-  }
-  return out;
-}
-
-function getAllData(ss) {
-  return {
-    apps:          sheetToObjects(ss, 'Apps'),
-    school:        sheetToKV(ss, 'School'),
-    admin:         sheetToObjects(ss, 'Admin'),
-    announcements: sheetToObjects(ss, 'Announcements'),
-    config:        sheetToKV(ss, 'Config'),
-  };
-}
-
-function sheetToObjects(ss, name) {
-  const sh = ss.getSheetByName(name);
-  if (!sh || sh.getLastRow() < 2) return [];
-  const [headers, ...rows] = sh.getDataRange().getValues();
-  return rows.filter(r => r[0] !== '' && r[0] !== null).map(r => {
-    const obj = {};
-    headers.forEach((h, i) => {
-      const v = r[i];
-      if (v === 'TRUE'  || v === true)  { obj[h] = true;  return; }
-      if (v === 'FALSE' || v === false) { obj[h] = false; return; }
-      obj[h] = v;
-    });
-    return obj;
-  });
-}
-
-function sheetToKV(ss, name) {
-  const sh = ss.getSheetByName(name);
-  if (!sh || sh.getLastRow() < 2) return {};
-  const rows = sh.getDataRange().getValues();
-  const obj  = {};
-  rows.slice(1).forEach(r => { if (r[0] !== '' && r[0] !== null) obj[String(r[0])] = r[1]; });
-  return obj;
-}
-
-function saveSheet(ss, name, data) {
-  let sh = ss.getSheetByName(name);
-  if (!sh) sh = ss.insertSheet(name);
-  sh.clearContents();
-  if (!data || !Array.isArray(data) || !data.length) return { saved: 0 };
-  const headers = Object.keys(data[0]);
-  const rows = data.map(o => headers.map(h => {
-    const v = o[h];
-    if (v === true)  return 'TRUE';
-    if (v === false) return 'FALSE';
-    return v !== undefined && v !== null ? v : '';
-  }));
-  sh.getRange(1, 1, 1, headers.length).setValues([headers]);
-  if (rows.length) sh.getRange(2, 1, rows.length, headers.length).setValues(rows);
-  return { saved: rows.length, sheet: name };
-}
-
-function checkHealth(ss) {
-  return ['Apps','School','Admin','Announcements','AuditLog','Config'].map(name => {
-    const sh = ss.getSheetByName(name);
-    return { name, exists: !!sh, rows: sh ? Math.max(0, sh.getLastRow()-1) : 0 };
-  });
-}
-
-function initSheets(ss) {
-  const SCHEMAS = {
-    Apps:          ['id','name','icon','color','url','sub','desc','badge','enabled','inDock','order'],
-    School:        ['key','value'],
-    Admin:         ['username','passwordHash','lastLogin'],
-    Announcements: ['id','title','body','type','startDate','endDate','active'],
-    AuditLog:      ['timestamp','action','user','detail','ip'],
-    Config:        ['key','value'],
-  };
-  const results = [];
-  for (const [name, headers] of Object.entries(SCHEMAS)) {
-    let sh = ss.getSheetByName(name);
-    if (!sh) {
-      sh = ss.insertSheet(name);
-      sh.getRange(1,1,1,headers.length).setValues([headers]);
-      const hr = sh.getRange(1,1,1,headers.length);
-      hr.setBackground('#1a1a2e'); hr.setFontColor('#ffffff'); hr.setFontWeight('bold');
-      results.push({ name, created: true });
-    } else {
-      results.push({ name, created: false });
-    }
-  }
-  return results;
-}
-
-function appendAuditLog(ss, data) {
-  try {
-    let sh = ss.getSheetByName('AuditLog');
-    if (!sh) { sh = ss.insertSheet('AuditLog'); sh.appendRow(['timestamp','action','user','detail','ip']); }
-    sh.appendRow([new Date().toISOString(), data.action||'', data.user||'portal', data.detail||'', data.ip||'']);
-    return { ok: true };
-  } catch (err) { return { ok: false, error: err.message }; }
-}
-
-function sha256Hex(input) {
-  const raw = Utilities.computeDigest(Utilities.DigestAlgorithm.SHA_256, input, Utilities.Charset.UTF_8);
-  return raw.map(b => ('0'+(b&0xff).toString(16)).slice(-2)).join('');
-}`;
-
 // ── Sheet Config State ──
-const SHEETS_DEFAULT = { url:'', apiKey:'', cacheMinutes:5, retryCount:3 };
-let sheetsConfig = {...SHEETS_DEFAULT};
-let syncStatus   = 'idle'; // idle | syncing | ok | warn | err
-let lastSyncTime = null;
+const SHEETS_DEFAULT = { url:'', cacheMinutes:5, retryCount:3 };
+let sheetsConfig     = {...SHEETS_DEFAULT};
+let syncStatus       = 'idle';
+let lastSyncTime     = null;
 let sheetsCfgChanged = false;
 
 function loadSheetsConfig() {
@@ -1747,7 +1450,6 @@ function sheetsCfgDirty() {
 // ── Populate Sheets Panel ──
 function populateSheetsPanel() {
   document.getElementById('gs-url').value   = sheetsConfig.url || '';
-  document.getElementById('gs-key').value   = sheetsConfig.apiKey || '';
   document.getElementById('gs-cache').value = sheetsConfig.cacheMinutes || 5;
   document.getElementById('gs-retry').value = sheetsConfig.retryCount || 3;
   renderHealthList([]);
@@ -1760,7 +1462,6 @@ function populateSheetsPanel() {
 
 function saveSheetConfig() {
   sheetsConfig.url          = document.getElementById('gs-url').value.trim();
-  sheetsConfig.apiKey       = document.getElementById('gs-key').value.trim();
   sheetsConfig.cacheMinutes = parseInt(document.getElementById('gs-cache').value)||5;
   sheetsConfig.retryCount   = parseInt(document.getElementById('gs-retry').value)||3;
   saveSheetsConfigLocal();
@@ -1770,13 +1471,10 @@ function saveSheetConfig() {
   updateSyncDots(sheetsConfig.url ? 'warn' : 'idle');
 }
 
-
 // ── Test Connection ──
 async function testSheetConnection() {
   const url = document.getElementById('gs-url').value.trim();
-  const key = document.getElementById('gs-key').value.trim();
   if(!url) { showToast('⚠️ กรุณากรอก Web App URL ก่อน','warn'); return; }
-
   const box    = document.getElementById('conn-result-box');
   const icon   = document.getElementById('conn-result-icon');
   const title  = document.getElementById('conn-result-title');
@@ -1784,7 +1482,6 @@ async function testSheetConnection() {
   const fill   = document.getElementById('conn-lat-fill');
   const latLbl = document.getElementById('conn-lat-label');
   const btn    = document.getElementById('btn-test-conn');
-
   box.classList.remove('hidden');
   icon.textContent   = '⏳';
   title.textContent  = 'กำลังทดสอบการเชื่อมต่อ...';
@@ -1794,17 +1491,15 @@ async function testSheetConnection() {
   btn.disabled       = true;
   btn.textContent    = '🔄 กำลังทดสอบ...';
   updateSyncDots('syncing');
-
   const t0 = Date.now();
   try {
-    const testUrl = url + '?apiKey=' + encodeURIComponent(key) + '&action=ping';
+    const testUrl = url + '?action=ping';
     const ctrl    = new AbortController();
     const tid     = setTimeout(() => ctrl.abort(), 10000);
     const res     = await fetch(testUrl, { signal:ctrl.signal, mode:'cors' });
     clearTimeout(tid);
     const latency = Date.now() - t0;
     const json    = await res.json();
-
     if(json.success) {
       icon.textContent   = '✅';
       title.textContent  = 'เชื่อมต่อสำเร็จ!';
@@ -1829,16 +1524,16 @@ async function testSheetConnection() {
     updateSyncDots('err');
     updateSheetsStatusCard('err');
   }
-  btn.disabled      = false;
-  btn.textContent   = '🔌 ทดสอบการเชื่อมต่อ';
+  btn.disabled    = false;
+  btn.textContent = '🔌 ทดสอบการเชื่อมต่อ';
 }
 
 // ── Pull from Sheets ──
 async function pullFromSheets() {
   if(!sheetsConfig.url) { showToast('⚠️ ยังไม่ได้ตั้งค่า URL','warn'); return; }
   const btn = document.getElementById('btn-pull');
-  btn.disabled     = true;
-  btn.textContent  = '⏳ กำลังโหลด...';
+  btn.disabled    = true;
+  btn.textContent = '⏳ กำลังโหลด...';
   updateSyncDots('syncing');
   try {
     const data = await fetchFromSheet('getAll');
@@ -1846,12 +1541,8 @@ async function pullFromSheets() {
     if(data.school && Object.keys(data.school).length) {
       state.school = { name: data.school.name||state.school.name, sub:data.school.sub||state.school.sub, emoji:data.school.emoji||state.school.emoji, logoUrl:data.school.logoUrl!==undefined?data.school.logoUrl:state.school.logoUrl };
     }
-    if(data.admin  && data.admin.length)  {
-      state.admin = {
-        username:     data.admin[0].username     || state.admin.username,
-        passwordHash: data.admin[0].passwordHash || state.admin.passwordHash || '',
-        password:     '',
-      };
+    if(data.admin  && data.admin.length) {
+      state.admin = { username: data.admin[0].username||state.admin.username, passwordHash: data.admin[0].passwordHash||state.admin.passwordHash||'', password: '' };
     }
     saveState();
     renderApps();
@@ -1878,12 +1569,11 @@ function pushToSheets() {
     btn.textContent = '⏳ กำลังอัปโหลด...';
     updateSyncDots('syncing');
     try {
-      await fetchFromSheet('saveApps',   { data: state.apps });
+      await fetchFromSheet('saveApps',  { data: state.apps });
       const schoolArr = Object.entries(state.school).map(([key,value]) => ({key,value}));
-      await fetchFromSheet('saveSchool', { data: schoolArr });
-      // ส่งเฉพาะ passwordHash ไม่ส่ง plaintext
+      await fetchFromSheet('saveSchool',{ data: schoolArr });
       const adminArr  = [{ username: state.admin.username, passwordHash: state.admin.passwordHash || '', lastLogin: '' }];
-      await fetchFromSheet('saveAdmin',  { data: adminArr });
+      await fetchFromSheet('saveAdmin', { data: adminArr });
       lastSyncTime = Date.now();
       setText('last-sync-label', new Date(lastSyncTime).toLocaleTimeString('th-TH'));
       updateSyncDots('ok');
@@ -1897,7 +1587,7 @@ function pushToSheets() {
   });
 }
 
-// ── Init Sheets Structure (first-time setup) ──
+// ── Init Sheets Structure ──
 async function initSheetsStructure() {
   if(!sheetsConfig.url) { showToast('⚠️ ยังไม่ได้ตั้งค่า URL','warn'); return; }
   showToast('🏗️ กำลังสร้าง Sheets...','info');
@@ -1905,9 +1595,7 @@ async function initSheetsStructure() {
   try {
     const results = await fetchFromSheet('initSheets');
     const created = (results||[]).filter(r=>r.created).map(r=>r.name);
-    const msg = created.length
-      ? `✅ สร้าง Sheet สำเร็จ: ${created.join(', ')}`
-      : '✅ Sheets ทั้งหมดมีอยู่แล้ว';
+    const msg = created.length ? `✅ สร้าง Sheet สำเร็จ: ${created.join(', ')}` : '✅ Sheets ทั้งหมดมีอยู่แล้ว';
     showToast(msg,'success');
     updateSyncDots('ok');
     checkSheetsHealth();
@@ -1966,10 +1654,10 @@ function updateSyncDots(status) {
 }
 
 function updateSheetsStatusCard(status, latency) {
-  const titleEl  = document.getElementById('sheets-status-title');
-  const subEl    = document.getElementById('sheets-status-sub');
-  const badgeEl  = document.getElementById('sheets-status-badge');
-  const iconEl   = document.getElementById('sheets-status-icon');
+  const titleEl = document.getElementById('sheets-status-title');
+  const subEl   = document.getElementById('sheets-status-sub');
+  const badgeEl = document.getElementById('sheets-status-badge');
+  const iconEl  = document.getElementById('sheets-status-icon');
   if(!titleEl) return;
   if(status === 'ok') {
     iconEl.textContent  = '✅';
@@ -1980,31 +1668,16 @@ function updateSheetsStatusCard(status, latency) {
   } else if(status === 'err') {
     iconEl.textContent  = '❌';
     titleEl.textContent = 'เชื่อมต่อไม่สำเร็จ';
-    subEl.textContent   = 'ตรวจสอบ URL, API Key และ Deploy อีกครั้ง';
+    subEl.textContent   = 'ตรวจสอบ URL และ Deploy อีกครั้ง';
     badgeEl.textContent = 'Error';
     badgeEl.className   = 'text-xs px-3 py-1 rounded-full bg-red-500/20 text-red-400 font-semibold flex-shrink-0';
   } else {
     iconEl.textContent  = '☁️';
     titleEl.textContent = sheetsConfig.url ? 'ตั้งค่าแล้ว รอทดสอบ' : 'ยังไม่ได้เชื่อมต่อ';
-    subEl.textContent   = 'กรอก Web App URL และ API Key แล้วกดทดสอบ';
+    subEl.textContent   = 'กรอก Web App URL แล้วกดทดสอบ';
     badgeEl.textContent = 'ออฟไลน์';
     badgeEl.className   = 'text-xs px-3 py-1 rounded-full bg-white/10 text-white/50 font-semibold flex-shrink-0';
   }
-}
-
-// ── Copy GAS Code ──
-function copyGasCode() {
-  navigator.clipboard.writeText(GAS_CODE).then(() => {
-    showToast('✅ คัดลอก Code.gs แล้ว — ไปวางใน Apps Script','success');
-  }).catch(() => {
-    const ta = document.createElement('textarea');
-    ta.value = GAS_CODE;
-    document.body.appendChild(ta);
-    ta.select();
-    document.execCommand('copy');
-    ta.remove();
-    showToast('✅ คัดลอก Code.gs แล้ว','success');
-  });
 }
 
 function openGasConsole() {
@@ -2050,23 +1723,18 @@ function importJSON(input) {
 }
 
 // ═══════════════════════════════════════
-// AUTO-SYNC: ดึงข้อมูลจาก Sheets เมื่อโหลดหน้า
-// เพื่อให้ทุกคน (ไม่ใช่แค่ Admin) เห็น Logo และข้อมูลล่าสุด
+// AUTO-SYNC: ดึงข้อมูลอัตโนมัติเมื่อเปิดหน้า
 // ═══════════════════════════════════════
 async function autoSyncFromSheets() {
-  if(!sheetsConfig.url) return; // ยังไม่ได้ตั้งค่า Sheets → ใช้ localStorage ปกติ
+  if(!sheetsConfig.url) return;
   const CACHE_MS = (sheetsConfig.cacheMinutes || 5) * 60 * 1000;
   const now = Date.now();
-  // ไม่ดึงซ้ำถ้า sync ล่าสุดยังไม่เกิน cache time
   if(lastSyncTime && (now - lastSyncTime) < CACHE_MS) return;
   try {
     updateSyncDots('syncing');
     const data = await fetchFromSheet('getAll', {}, 8000);
     let changed = false;
-    if(data.apps && data.apps.length) {
-      state.apps = data.apps;
-      changed = true;
-    }
+    if(data.apps && data.apps.length) { state.apps = data.apps; changed = true; }
     if(data.school && Object.keys(data.school).length) {
       state.school = {
         name:    data.school.name    || state.school.name,
@@ -2080,19 +1748,14 @@ async function autoSyncFromSheets() {
       state.admin = {
         username:     data.admin[0].username     || state.admin.username,
         passwordHash: data.admin[0].passwordHash || state.admin.passwordHash || '',
-        password:     '', // ลบ plaintext เสมอหลัง sync
+        password:     '',
       };
     }
-    if(changed) {
-      saveState();
-      renderSchoolInfo();
-      renderApps();
-    }
+    if(changed) { saveState(); renderSchoolInfo(); renderApps(); }
     lastSyncTime = now;
     setText('last-sync-label', new Date(now).toLocaleTimeString('th-TH'));
     updateSyncDots('ok');
   } catch(err) {
-    // Auto-sync ล้มเหลว → ใช้ข้อมูลจาก localStorage ต่อไป ไม่ต้องแจ้ง error
     updateSyncDots(sheetsConfig.url ? 'warn' : 'idle');
   }
 }
@@ -2101,16 +1764,15 @@ async function autoSyncFromSheets() {
 // INIT
 // ═══════════════════════════════════════
 async function init() {
-  // โหลด Sheets config ก่อน เพราะ loadState() ต้องใช้ sheetsConfig.cacheMinutes
   loadSheetsConfig();
   await loadState();
 
-  // ── Migrate legacy plaintext password → SHA-256 hash ──
+  // Migrate legacy plaintext password → SHA-256 hash
   if (state.admin.password && !state.admin.passwordHash) {
     try {
       const h = await hashPassword(state.admin.password);
       state.admin.passwordHash = h;
-      state.admin.password     = ''; // ลบ plaintext
+      state.admin.password     = '';
       saveState();
     } catch(_) {}
   }
@@ -2120,7 +1782,12 @@ async function init() {
   renderSchoolInfo();
   renderApps();
   updateAdminUI();
-  // autoSyncFromSheets ถูกเรียกจาก loadState แล้ว (ถ้าตั้งค่า Sheets)
+
+  // ดึงข้อมูลจาก Sheets อัตโนมัติเมื่อเปิดหน้า (bypass cache ครั้งแรก)
+  if (sheetsConfig.url) {
+    lastSyncTime = 0;
+    autoSyncFromSheets();
+  }
 }
 
 init();
